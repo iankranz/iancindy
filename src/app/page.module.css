@@ -51,7 +51,7 @@
 /* Media query fallback when no class is set */
 @media (prefers-color-scheme: dark) {
   :global(html:not(.dark)) .container {
-    background-color: var(--background-light);
+    background-color: var(--background-dark);
   }
 }
 
