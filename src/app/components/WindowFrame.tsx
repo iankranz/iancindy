@@ -10,11 +10,9 @@ export default function WindowFrame() {
 
   useEffect(() => {
     setMounted(true)
-    // Sync with what the script in layout.tsx set
     const isDarkMode = document.documentElement.classList.contains("dark")
     setIsDark(isDarkMode)
 
-    // Listen for theme changes
     const observer = new MutationObserver(() => {
       const isDarkMode = document.documentElement.classList.contains("dark")
       setIsDark(isDarkMode)

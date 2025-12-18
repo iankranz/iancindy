@@ -9,7 +9,6 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     setMounted(true)
-    // Sync with what the script in layout.tsx set
     const isDarkMode = document.documentElement.classList.contains("dark")
     setIsDark(isDarkMode)
   }, [])
@@ -29,14 +28,13 @@ export default function ThemeToggle() {
     }
   }
 
-  // Prevent hydration mismatch
   if (!mounted) {
     return (
       <button 
         className={styles.toggleButton}
         aria-label="Toggle theme"
       >
-        🌙 Dark
+        ☀️ Light
       </button>
     )
   }
@@ -47,7 +45,7 @@ export default function ThemeToggle() {
       className={styles.toggleButton}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {isDark ? "☀️ Light" : "🌙 Dark"}
+      {isDark ? "🌙 Dark" : "☀️ Light"}
     </button>
   )
 }
