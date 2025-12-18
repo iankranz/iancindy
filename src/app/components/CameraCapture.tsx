@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Camera, Upload, X } from 'lucide-react'
 import useFaceDetection from '../hooks/useFaceDetection'
 import { TEMPLATE_CONFIG } from '../utils/templateConfig'
+import { isHeicFile, convertHeicToJpeg } from '../utils/heicConverter'
 import styles from './FaceInHoleModal.module.css'
 
 interface CameraCaptureProps {
@@ -321,7 +322,21 @@ export default function CameraCapture({
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file && file.type.startsWith('image/')) {
+    if (!file) return
+    
+    // Handle HEIC files
+    let fileToProcess = file
+    if (isHeicFile(file)) {
+      try {
+        fileToProcess = await convertHeicToJpeg(file)
+      } catch (error) {
+        alert('Failed to process HEIC file. Please convert it to JPEG first.')
+        return
+      }
+    }
+    
+    // Check if it's an image file
+    if (fileToProcess.type.startsWith('image/') || isHeicFile(file)) {
       const reader = new FileReader()
       reader.onload = async (e) => {
         const imageDataUrl = e.target?.result as string
@@ -336,7 +351,7 @@ export default function CameraCapture({
           setIsDetecting(false)
         }
       }
-      reader.readAsDataURL(file)
+      reader.readAsDataURL(fileToProcess)
     }
   }
 
@@ -376,7 +391,7 @@ export default function CameraCapture({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,.heic,.heif,.hif"
           onChange={handleFileUpload}
           style={{ display: 'none' }}
         />

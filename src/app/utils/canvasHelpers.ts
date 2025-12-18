@@ -37,7 +37,8 @@ export const drawComposite = (
   userImage: HTMLImageElement,
   templateImage: HTMLImageElement,
   transform: Transform,
-  ovalBounds: OvalBounds
+  ovalBounds: OvalBounds,
+  transparentBackground: boolean = false
 ) => {
   // Clear canvas
   ctx.clearRect(0, 0, canvasWidth, canvasHeight)
@@ -45,9 +46,11 @@ export const drawComposite = (
   // Save context state
   ctx.save()
 
-  // Draw background (white)
-  ctx.fillStyle = '#ffffff'
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  // Draw background (white) only if not transparent
+  if (!transparentBackground) {
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  }
 
   // Create oval clipping path
   ctx.save()
@@ -208,6 +211,7 @@ export const createDualComposites = async (
   // Draw composites (using same oval bounds for both)
   const ovalBounds = getOvalConfiguration(canvasWidth, canvasHeight)
 
+  // Card composite with white background (for download/share)
   drawComposite(
     cardCtx,
     canvasWidth,
@@ -215,9 +219,11 @@ export const createDualComposites = async (
     userImage,
     cardTemplate.templateImage,
     transform,
-    ovalBounds
+    ovalBounds,
+    false
   )
 
+  // Kevin composite with transparent background (for layer replacement)
   drawComposite(
     kevinCtx,
     canvasWidth,
@@ -225,7 +231,8 @@ export const createDualComposites = async (
     userImage,
     kevinTemplate.templateImage,
     transform,
-    ovalBounds
+    ovalBounds,
+    true
   )
 
   return {

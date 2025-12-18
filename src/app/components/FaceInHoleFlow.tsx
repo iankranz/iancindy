@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { ArrowLeft, X, Download, Share2, Camera } from 'lucide-react'
+import { ArrowLeft, X, Download, Share2, Camera, RotateCcw } from 'lucide-react'
 import InfoScreen from './InfoScreen'
 import CameraCapture from './CameraCapture'
 import CropEditorHandles from './CropEditorHandles'
@@ -9,6 +9,7 @@ import ResultScreen from './ResultScreen'
 import { createDualComposites, type Transform } from '../utils/canvasHelpers'
 import { TEMPLATE_CONFIG } from '../utils/templateConfig'
 import type { FaceData } from '../hooks/useFaceDetection'
+import { isHeicFile, convertHeicToJpeg } from '../utils/heicConverter'
 import styles from './FaceInHoleModal.module.css'
 
 const TEMPLATE_WIDTH = 1000
@@ -74,18 +75,62 @@ export default function FaceInHoleFlow({
 
       const templateWidth = TEMPLATE_WIDTH
       const templateHeight = TEMPLATE_HEIGHT
+      const templateAspectRatio = templateHeight / templateWidth // 1389/1000
       
+      // Calculate oval dimensions in template (absolute pixels)
       const templateOvalWidth = config.oval.radiusX * 2 * templateWidth
       const templateOvalHeight = config.oval.radiusY * 2 * templateHeight
       const templateOvalCenterX = config.oval.centerX * templateWidth
       const templateOvalCenterY = config.oval.centerY * templateHeight
 
-      const scaleX = templateOvalWidth / img.width
-      const scaleY = templateOvalHeight / img.height
-      const scale = Math.min(scaleX, scaleY) * 1.1
+      // Use actual loaded image dimensions
+      const imageWidth = img.width
+      const imageHeight = img.height
+      const imageAspectRatio = imageHeight / imageWidth
 
-      const x = templateOvalCenterX - (img.width * scale) / 2
-      const y = templateOvalCenterY - (img.height * scale) / 2
+      // Check if this is a camera capture (has template aspect ratio) or a cropped image
+      const aspectRatioTolerance = 0.01
+      const isCameraCapture = Math.abs(imageAspectRatio - templateAspectRatio) < aspectRatioTolerance
+
+      let scale: number
+      let x: number
+      let y: number
+
+      if (isCameraCapture) {
+        // Camera capture: full image with template aspect ratio, oval at fixed relative position
+        // Calculate oval dimensions in captured image (absolute pixels)
+        // The oval has the same relative size in both (same percentages)
+        const captureOvalWidth = config.oval.radiusX * 2 * imageWidth
+        const captureOvalHeight = config.oval.radiusY * 2 * imageHeight
+
+        // Scale the captured image so its oval matches the template oval exactly
+        const scaleX = templateOvalWidth / captureOvalWidth
+        const scaleY = templateOvalHeight / captureOvalHeight
+        
+        // Since both images have the same aspect ratio (1389/1000) and oval uses same percentages,
+        // scaleX and scaleY should be equal, but use the one that ensures full coverage
+        scale = Math.max(scaleX, scaleY)
+
+        // Center the scaled image on the oval center
+        const scaledWidth = imageWidth * scale
+        const scaledHeight = imageHeight * scale
+        x = templateOvalCenterX - scaledWidth / 2
+        y = templateOvalCenterY - scaledHeight / 2
+      } else {
+        // Cropped image: the image IS the oval region (cropped from editor)
+        // Scale the cropped image to match the template oval dimensions
+        const scaleX = templateOvalWidth / imageWidth
+        const scaleY = templateOvalHeight / imageHeight
+        
+        // Use the scale that ensures the image covers the entire oval
+        scale = Math.max(scaleX, scaleY)
+
+        // Center the scaled cropped image on the oval center
+        const scaledWidth = imageWidth * scale
+        const scaledHeight = imageHeight * scale
+        x = templateOvalCenterX - scaledWidth / 2
+        y = templateOvalCenterY - scaledHeight / 2
+      }
 
       const transform: Transform = {
         x,
@@ -160,7 +205,21 @@ export default function FaceInHoleFlow({
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file && file.type.startsWith('image/')) {
+    if (!file) return
+    
+    // Handle HEIC files
+    let fileToProcess = file
+    if (isHeicFile(file)) {
+      try {
+        fileToProcess = await convertHeicToJpeg(file)
+      } catch (error) {
+        alert('Failed to process HEIC file. Please convert it to JPEG first.')
+        return
+      }
+    }
+    
+    // Check if it's an image file
+    if (fileToProcess.type.startsWith('image/') || isHeicFile(file)) {
       const reader = new FileReader()
       reader.onload = async (e) => {
         const imageDataUrl = e.target?.result as string
@@ -168,7 +227,7 @@ export default function FaceInHoleFlow({
           handleImageCapture(imageDataUrl, null, false)
         }
       }
-      reader.readAsDataURL(file)
+      reader.readAsDataURL(fileToProcess)
     }
   }
   
@@ -184,7 +243,15 @@ export default function FaceInHoleFlow({
     <>
       {!(step === 'capture' && !cameraStarted) && (
         <div className={styles.stepHeader}>
-          {showBackButton() && (
+          {step === 'result' ? (
+            <button
+              className={styles.stepHeaderBack}
+              onClick={handleStartOver}
+              aria-label="Start over"
+            >
+              <RotateCcw size={24} />
+            </button>
+          ) : showBackButton() ? (
             <button
               className={styles.stepHeaderBack}
               onClick={handleBackFromHeader}
@@ -192,7 +259,7 @@ export default function FaceInHoleFlow({
             >
               <ArrowLeft size={24} />
             </button>
-          )}
+          ) : null}
           <h1 className={styles.stepHeaderText}>{getStepHeader()}</h1>
           <button
             className={styles.modalClose}
@@ -219,23 +286,25 @@ export default function FaceInHoleFlow({
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif,.hif"
             onChange={handleFileUpload}
             style={{ display: 'none' }}
           />
           <div className={styles.modalFooter}>
-            <button
-              className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
-              onClick={handleUpload}
-            >
-              Upload
-            </button>
-            <button
-              className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary}`}
-              onClick={handleTakePicture}
-            >
-              Take a pic
-            </button>
+            <div className={styles.modalFooterRow}>
+              <button
+                className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
+                onClick={handleUpload}
+              >
+                Upload
+              </button>
+              <button
+                className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary}`}
+                onClick={handleTakePicture}
+              >
+                Take a pic
+              </button>
+            </div>
           </div>
         </>
       )}
@@ -273,24 +342,26 @@ export default function FaceInHoleFlow({
             onCropComplete={handleCropComplete}
           />
           <div className={styles.modalFooter}>
-            <button
-              className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
-              onClick={() => {
-                const resetButton = document.querySelector('[data-reset-button]') as HTMLButtonElement
-                resetButton?.click()
-              }}
-            >
-              Reset
-            </button>
-            <button
-              className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary}`}
-              onClick={() => {
-                const continueButton = document.querySelector('[data-continue-button]') as HTMLButtonElement
-                continueButton?.click()
-              }}
-            >
-              Continue
-            </button>
+            <div className={styles.modalFooterRow}>
+              <button
+                className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
+                onClick={() => {
+                  const resetButton = document.querySelector('[data-reset-button]') as HTMLButtonElement
+                  resetButton?.click()
+                }}
+              >
+                Reset
+              </button>
+              <button
+                className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary}`}
+                onClick={() => {
+                  const continueButton = document.querySelector('[data-continue-button]') as HTMLButtonElement
+                  continueButton?.click()
+                }}
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </>
       )}

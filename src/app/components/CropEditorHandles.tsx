@@ -40,11 +40,102 @@ export default function CropEditorHandles({
   const [tempBounds, setTempBounds] = useState<OvalBounds | null>(null)
 
   useEffect(() => {
-    if (isReady) {
-      initializeCrop()
+    // Initialize crop editor immediately, don't wait for face detection
+    initializeCrop()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userImage])
+  
+  // Update oval position when face detection becomes ready (if it wasn't ready initially)
+  useEffect(() => {
+    if (isReady && imageObj && ovalBounds && !isDetectingFace) {
+      // Check if current oval is centered (default position), if so, try to update with face detection
+      const currentCenterX = ovalBounds.x + ovalBounds.width / 2
+      const currentCenterY = ovalBounds.y + ovalBounds.height / 2
+      const canvasCenterX = canvasSize.width / 2
+      const canvasCenterY = canvasSize.height / 2
+      const isCentered = Math.abs(currentCenterX - canvasCenterX) < 10 && Math.abs(currentCenterY - canvasCenterY) < 10
+      
+      if (isCentered) {
+        // Re-run face detection to update oval position if face detection just became ready
+        const updateWithFaceDetection = async () => {
+          setIsDetectingFace(true)
+          const faceData = await detectFace(userImage)
+          setIsDetectingFace(false)
+          
+          if (faceData && imageObj) {
+            const config = TEMPLATE_CONFIG
+            const width = canvasSize.width
+            const height = canvasSize.height
+            
+            let ovalRadiusX: number, ovalRadiusY: number
+            let ovalAspectRatio = 1
+            if (config.oval) {
+              const templateAspectRatio = config.templateAspectRatio || 1.25
+              ovalAspectRatio =
+                (config.oval.radiusY * templateAspectRatio) / config.oval.radiusX
+            }
+            
+            const imgScale = Math.min(width / imageObj.width, height / imageObj.height)
+            const scaledWidth = imageObj.width * imgScale
+            const scaledHeight = imageObj.height * imgScale
+            const offsetX = (width - scaledWidth) / 2
+            const offsetY = (height - scaledHeight) / 2
+            
+            const faceBox = faceData.box
+            const faceWidthInCanvas = faceBox.width * imgScale
+            const faceHeightInCanvas = faceBox.height * imgScale
+            
+            const widthScale = 0.9
+            ovalRadiusX = (faceWidthInCanvas * widthScale) / 2
+            ovalRadiusY = ovalRadiusX * ovalAspectRatio
+            
+            const maxOvalWidth = width * 0.9
+            const maxOvalHeight = height * 0.9
+            
+            if (ovalRadiusX * 2 > maxOvalWidth) {
+              ovalRadiusX = maxOvalWidth / 2
+              ovalRadiusY = ovalRadiusX * ovalAspectRatio
+            }
+            if (ovalRadiusY * 2 > maxOvalHeight) {
+              ovalRadiusY = maxOvalHeight / 2
+              ovalRadiusX = ovalRadiusY / ovalAspectRatio
+            }
+            
+            const minSize = Math.min(width, height) * 0.15
+            if (ovalRadiusX * 2 < minSize) {
+              ovalRadiusX = minSize / 2
+              ovalRadiusY = ovalRadiusX * ovalAspectRatio
+            }
+            
+            const faceCenterXInOriginal = faceBox.x + faceBox.width / 2
+            const faceCenterYInOriginal = faceBox.y + faceBox.height / 2
+            
+            const faceCenterXInCanvas =
+              faceCenterXInOriginal * imgScale + offsetX
+            const faceCenterYInCanvas =
+              faceCenterYInOriginal * imgScale + offsetY
+            
+            const heightOffsetPercent = 0.2
+            const yOffset = faceHeightInCanvas * heightOffsetPercent
+            const ovalCenterY = faceCenterYInCanvas - yOffset
+            
+            const updatedOvalBounds: OvalBounds = {
+              x: faceCenterXInCanvas - ovalRadiusX,
+              y: ovalCenterY - ovalRadiusY,
+              width: ovalRadiusX * 2,
+              height: ovalRadiusY * 2,
+              rotation: 0,
+            }
+            
+            setOvalBounds(updatedOvalBounds)
+            setInitialOvalBounds(updatedOvalBounds)
+          }
+        }
+        updateWithFaceDetection()
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userImage, isReady])
+  }, [isReady])
 
   useEffect(() => {
     if (imageObj && canvasRef.current) {
@@ -59,23 +150,27 @@ export default function CropEditorHandles({
       img.onload = async () => {
         setImageObj(img)
 
-        const maxWidth = Math.min(window.innerWidth - 40, 800)
+        // Use full width of screen (accounting for padding)
+        // On mobile, the canvas container extends to full width with negative margins
+        const isMobile = window.innerWidth <= 768
+        const padding = isMobile ? 0 : 32 // 16px padding on each side for desktop
+        const maxWidth = window.innerWidth - padding
         const imgAspectRatio = img.height / img.width
         let width: number, height: number
 
-        if (imgAspectRatio >= 1) {
-          height = Math.min(maxWidth * imgAspectRatio, window.innerHeight - 300)
-          width = height / imgAspectRatio
-        } else {
-          width = maxWidth
-          height = width * imgAspectRatio
-        }
+        // Always use full width, calculate height based on aspect ratio
+        width = maxWidth
+        height = width * imgAspectRatio
 
         setCanvasSize({ width, height })
 
-        setIsDetectingFace(true)
-        const faceData = await detectFace(userImage)
-        setIsDetectingFace(false)
+        // Try face detection if ready, otherwise use default position
+        let faceData: FaceData | null = null
+        if (isReady) {
+          setIsDetectingFace(true)
+          faceData = await detectFace(userImage)
+          setIsDetectingFace(false)
+        }
 
         const config = TEMPLATE_CONFIG
         let ovalRadiusX: number, ovalRadiusY: number
@@ -489,7 +584,6 @@ export default function CropEditorHandles({
     <div className={styles.cropEditor}>
       <div className={styles.cropInstructionsContainer}>
         <p className={styles.cropInstructionText}>adjust until your face fills the oval</p>
-        <p className={styles.cropInstructionText}>drag corners to resize • drag rotation handle to rotate • drag oval to move</p>
       </div>
 
       <div className={styles.cropCanvasContainer}>

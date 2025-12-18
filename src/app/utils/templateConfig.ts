@@ -1,7 +1,6 @@
 /**
  * Static template configuration
  * Uses same format as reference project
- * TODO: Update with actual measured values from templates
  */
 
 export interface OvalConfig {
@@ -23,12 +22,12 @@ export interface TemplateConfig {
  */
 export const TEMPLATE_CONFIG: TemplateConfig = {
   oval: {
-    centerX: 0.5, // 50% - center horizontally
-    centerY: 0.45, // 45% - slightly above center
-    radiusX: 0.2, // 20% of width
-    radiusY: 0.25, // 25% of height
-    rotation: 0, // no rotation
+    centerX: 0.495,
+    centerY: 0.58,
+    radiusX: 0.204,
+    radiusY: 0.226,
+    rotation: 0,
   },
-  templateAspectRatio: 1.389, // 1000 x 1389 (height/width)
+  templateAspectRatio: 1.389,
 };
 
