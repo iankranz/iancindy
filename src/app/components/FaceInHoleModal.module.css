@@ -32,6 +32,15 @@
   --button-secondary-text: #4c5051;
 }
 
+
+.modalMainContent {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  padding-bottom: 80px; /* Space for footer */
+}
+
 :global(html.dark) .modalContent {
   --button-secondary-bg: #302f30;
   --button-secondary-text: #bcbcbc;
@@ -47,8 +56,10 @@
 
   .modalContent {
     max-width: 100%;
+    height: 100vh;
     max-height: 100vh;
     border-radius: 0;
+    overflow: hidden;
   }
 }
 
@@ -80,7 +91,6 @@
 @media (max-width: 768px) {
   .infoScreen {
     padding: 24px 16px;
-    min-height: calc(100vh - 60px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -97,7 +107,7 @@
 }
 
 .infoPreview {
-  margin-top: 20px;
+  margin-top: 8px;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -274,8 +284,7 @@
 
 /* Camera Capture */
 .cameraCapture {
-  padding: 16px;
-  padding-bottom: 80px; /* Space for footer */
+  padding: 0px 16px 16px 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -285,7 +294,6 @@
 
 @media (max-width: 768px) {
   .cameraCapture {
-    padding: 16px;
     justify-content: flex-start;
   }
 }
@@ -432,7 +440,6 @@
 @media (max-width: 768px) {
   .imagePreview {
     padding: 16px;
-    min-height: calc(100vh - 60px);
     justify-content: space-between;
   }
 }
@@ -482,7 +489,6 @@
 /* Crop Editor */
 .cropEditor {
   padding: 0 16px;
-  padding-bottom: 80px; /* Space for footer */
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -592,7 +598,6 @@
 /* Result Screen */
 .resultScreen {
   padding: 0;
-  padding-bottom: 80px; /* Space for footer */
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -608,13 +613,12 @@
   background-color: #f0f0f0;
   border-radius: 2px;
   overflow: hidden;
-  margin-bottom: 16px;
+
 }
 
 @media (max-width: 768px) {
   .resultScreen {
-    padding: 16px;
-    min-height: calc(100vh - 60px);
+
     justify-content: space-between;
   }
   
@@ -712,13 +716,33 @@
   flex: none;
 }
 
-@media (max-width: 768px) {
-  .cameraCapture,
-  .resultScreen,
-  .cropEditor {
-    padding-bottom: 100px; /* More space on mobile for footer */
-  }
+/* Icon-only buttons */
+.modalFooterButtonIconOnly {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  aspect-ratio: 1;
+  flex: 0 0 48px; /* Don't flex, maintain 48px width */
+  min-width: 48px;
+  max-width: 48px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.modalFooterButtonIconOnly svg {
+  margin: 0;
+}
+
+.modalFooterButtonText {
+  display: none;
+}
+
+.modalFooterButtonFlex {
+  flex: 1;
+}
+
 
 /* Spinner */
 .spinner {
@@ -759,7 +783,7 @@
 
 @media (max-width: 768px) {
   .loading {
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - 200px);
   }
 }
 

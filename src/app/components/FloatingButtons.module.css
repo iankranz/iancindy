@@ -133,7 +133,7 @@
 
 /* Snowflake icon animation */
 .snowflakeIcon {
-  animation: snowflakeSpin 5s linear infinite;
+  animation: snowflakeSpin 8s linear infinite;
 }
 
 @keyframes snowflakeSpin {
@@ -146,7 +146,13 @@
 }
 
 .snowflakeIcon:hover {
-  animation: snowflakeSpin 1.2s linear infinite;
+  animation: snowflakeSpin 2s linear infinite;
+}
+
+.snowflakeButton:active .snowflakeIcon,
+.mobileSnowflakeButton:active .snowflakeIcon {
+  animation: snowflakeSpin 0.8s linear infinite;
+  opacity: 1;
 }
 
 /* Separate snowflake button */
@@ -225,7 +231,7 @@
 }
 
 .mobileIconButton:active {
-  opacity: 0.6;
+  opacity: 1;
 }
 
 :global(html.dark) .mobileIconButton {
@@ -264,7 +270,7 @@
 }
 
 .mobileSnowflakeButton:active {
-  opacity: 0.6;
+  opacity: 1;
 }
 
 :global(html.dark) .mobileSnowflakeButton {

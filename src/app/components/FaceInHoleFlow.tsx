@@ -224,56 +224,96 @@ export default function FaceInHoleFlow({
 
   return (
     <>
-      {!(step === 'capture' && !cameraStarted) && (
-        <div className={styles.stepHeader}>
-          {step === 'result' ? (
+      <div className={styles.modalMainContent}>
+        {!(step === 'capture' && !cameraStarted) && (
+          <div className={styles.stepHeader}>
+            {step === 'result' ? (
+              <button
+                className={styles.stepHeaderBack}
+                onClick={handleStartOver}
+                aria-label="Start over"
+              >
+                <RotateCcw size={24} />
+              </button>
+            ) : showBackButton() ? (
+              <button
+                className={styles.stepHeaderBack}
+                onClick={handleBackFromHeader}
+                aria-label="Back"
+              >
+                <ArrowLeft size={24} />
+              </button>
+            ) : null}
+            <h1 className={styles.stepHeaderText}>{getStepHeader()}</h1>
             <button
-              className={styles.stepHeaderBack}
-              onClick={handleStartOver}
-              aria-label="Start over"
+              className={styles.modalClose}
+              onClick={onClose}
+              aria-label="Close"
             >
-              <RotateCcw size={24} />
+              <X size={24} />
             </button>
-          ) : showBackButton() ? (
+          </div>
+        )}
+        {step === 'capture' && !cameraStarted && (
+          <>
             <button
-              className={styles.stepHeaderBack}
-              onClick={handleBackFromHeader}
-              aria-label="Back"
+              className={`${styles.modalClose} ${styles.modalCloseStandalone}`}
+              onClick={onClose}
+              aria-label="Close"
             >
-              <ArrowLeft size={24} />
+              <X size={24} />
             </button>
-          ) : null}
-          <h1 className={styles.stepHeaderText}>{getStepHeader()}</h1>
-          <button
-            className={styles.modalClose}
-            onClick={onClose}
-            aria-label="Close"
-          >
-            <X size={24} />
-          </button>
-        </div>
-      )}
+            <InfoScreen
+              onTakePicture={handleTakePicture}
+              onUpload={handleUpload}
+            />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*,.heic,.heif,.hif"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
+          </>
+        )}
+        {step === 'capture' && cameraStarted && !isProcessing && (
+          <CameraCapture
+            onImageCapture={handleImageCapture}
+            onBack={() => {
+              setCameraStarted(false)
+            }}
+            skipInitialScreen={true}
+            onCapture={() => {
+              const captureButton = document.querySelector('[data-capture-button]') as HTMLButtonElement
+              captureButton?.click()
+            }}
+          />
+        )}
+        {step === 'crop' && capturedImage && !isProcessing && (
+          <CropEditorHandles
+            userImage={capturedImage}
+            onCropComplete={handleCropComplete}
+          />
+        )}
+        {isProcessing && (
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <p>Creating your masterpiece...</p>
+          </div>
+        )}
+        {step === 'result' &&
+          cardCompositeUrl &&
+          kevinCompositeUrl &&
+          !isProcessing && (
+            <ResultScreen
+              cardCompositeUrl={cardCompositeUrl}
+              kevinCompositeUrl={kevinCompositeUrl}
+              onReplaceKevin={handleReplaceKevin}
+            />
+          )}
+      </div>
       {step === 'capture' && !cameraStarted && (
-        <>
-          <button
-            className={`${styles.modalClose} ${styles.modalCloseStandalone}`}
-            onClick={onClose}
-            aria-label="Close"
-          >
-            <X size={24} />
-          </button>
-          <InfoScreen
-            onTakePicture={handleTakePicture}
-            onUpload={handleUpload}
-          />
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*,.heic,.heif,.hif"
-            onChange={handleFileUpload}
-            style={{ display: 'none' }}
-          />
-          <div className={styles.modalFooter}>
+        <div className={styles.modalFooter}>
             <div className={styles.modalFooterRow}>
               <button
                 className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
@@ -289,85 +329,53 @@ export default function FaceInHoleFlow({
               </button>
             </div>
           </div>
-        </>
       )}
       {step === 'capture' && cameraStarted && !isProcessing && (
-        <>
-          <CameraCapture
-            onImageCapture={handleImageCapture}
-            onBack={() => {
-              setCameraStarted(false)
-            }}
-            skipInitialScreen={true}
-            onCapture={() => {
+        <div className={styles.modalFooter}>
+          <button
+            className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary}`}
+            onClick={() => {
               const captureButton = document.querySelector('[data-capture-button]') as HTMLButtonElement
               captureButton?.click()
             }}
-          />
-          <div className={styles.modalFooter}>
+          >
+            <Camera size={24} style={{ marginRight: '10px', verticalAlign: 'middle' }} />
+            Capture
+          </button>
+        </div>
+      )}
+      {step === 'crop' && capturedImage && !isProcessing && (
+        <div className={styles.modalFooter}>
+          <div className={styles.modalFooterRow}>
+            <button
+              className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
+              onClick={() => {
+                const resetButton = document.querySelector('[data-reset-button]') as HTMLButtonElement
+                resetButton?.click()
+              }}
+            >
+              Reset
+            </button>
             <button
               className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary}`}
               onClick={() => {
-                const captureButton = document.querySelector('[data-capture-button]') as HTMLButtonElement
-                captureButton?.click()
+                const continueButton = document.querySelector('[data-continue-button]') as HTMLButtonElement
+                continueButton?.click()
               }}
             >
-              <Camera size={24} style={{ marginRight: '10px', verticalAlign: 'middle' }} />
-              Capture
+              Continue
             </button>
           </div>
-        </>
-      )}
-      {step === 'crop' && capturedImage && !isProcessing && (
-        <>
-          <CropEditorHandles
-            userImage={capturedImage}
-            onCropComplete={handleCropComplete}
-          />
-          <div className={styles.modalFooter}>
-            <div className={styles.modalFooterRow}>
-              <button
-                className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
-                onClick={() => {
-                  const resetButton = document.querySelector('[data-reset-button]') as HTMLButtonElement
-                  resetButton?.click()
-                }}
-              >
-                Reset
-              </button>
-              <button
-                className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary}`}
-                onClick={() => {
-                  const continueButton = document.querySelector('[data-continue-button]') as HTMLButtonElement
-                  continueButton?.click()
-                }}
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-      {isProcessing && (
-        <div className={styles.loading}>
-          <div className={styles.spinner}></div>
-          <p>Creating your masterpiece...</p>
         </div>
       )}
       {step === 'result' &&
         cardCompositeUrl &&
         kevinCompositeUrl &&
         !isProcessing && (
-          <>
-            <ResultScreen
-              cardCompositeUrl={cardCompositeUrl}
-              kevinCompositeUrl={kevinCompositeUrl}
-              onReplaceKevin={handleReplaceKevin}
-            />
-            <div className={styles.modalFooter}>
+          <div className={styles.modalFooter}>
               <div className={styles.modalFooterRow}>
                 <button
-                  className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
+                  className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary} ${styles.modalFooterButtonIconOnly}`}
                   onClick={async () => {
                     try {
                       const img = new Image()
@@ -394,12 +402,13 @@ export default function FaceInHoleFlow({
                       // Download failed silently
                     }
                   }}
+                  aria-label="Download"
                 >
-                  <Download size={18} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                  Download
+                  <Download size={18} />
+                  <span className={styles.modalFooterButtonText}>Download</span>
                 </button>
                 <button
-                  className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary}`}
+                  className={`${styles.modalFooterButton} ${styles.modalFooterButtonSecondary} ${styles.modalFooterButtonIconOnly}`}
                   onClick={async () => {
                     try {
                       const img = new Image()
@@ -437,20 +446,20 @@ export default function FaceInHoleFlow({
                       // Share failed silently
                     }
                   }}
+                  aria-label="Share"
                 >
-                  <Share2 size={18} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
-                  share
+                  <Share2 size={18} />
+                  <span className={styles.modalFooterButtonText}>share</span>
+                </button>
+                <button
+                  className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary} ${styles.modalFooterButtonFlex}`}
+                  onClick={() => handleReplaceKevin(kevinCompositeUrl)}
+                >
+                  You are kevin!
                 </button>
               </div>
-              <button
-                className={`${styles.modalFooterButton} ${styles.modalFooterButtonPrimary} ${styles.modalFooterButtonFullWidth}`}
-                onClick={() => handleReplaceKevin(kevinCompositeUrl)}
-              >
-                You are kevin!
-              </button>
             </div>
-          </>
-        )}
+          )}
     </>
   )
 }

@@ -22,10 +22,10 @@ export interface TemplateConfig {
  */
 export const TEMPLATE_CONFIG: TemplateConfig = {
   oval: {
-    centerX: 0.495,
-    centerY: 0.58,
-    radiusX: 0.204,
-    radiusY: 0.226,
+    centerX: 0.496,
+    centerY: 0.581,
+    radiusX: 0.206,
+    radiusY: 0.224,
     rotation: 0,
   },
   templateAspectRatio: 1.389,
