@@ -40,6 +40,10 @@ export const drawComposite = (
   ovalBounds: OvalBounds,
   transparentBackground: boolean = false
 ) => {
+  // Use imageSmoothingEnabled for better quality/performance balance
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
+  
   ctx.clearRect(0, 0, canvasWidth, canvasHeight)
   ctx.save()
 
@@ -48,6 +52,7 @@ export const drawComposite = (
     ctx.fillRect(0, 0, canvasWidth, canvasHeight)
   }
 
+  // Create clipping path for oval
   ctx.save()
   ctx.beginPath()
   ctx.ellipse(
@@ -61,15 +66,19 @@ export const drawComposite = (
   )
   ctx.clip()
 
+  // Draw user image with transform
   ctx.save()
   ctx.translate(transform.x, transform.y)
   ctx.scale(transform.scale, transform.scale)
-  ctx.rotate((transform.rotation * Math.PI) / 180)
+  if (transform.rotation !== 0) {
+    ctx.rotate((transform.rotation * Math.PI) / 180)
+  }
   ctx.drawImage(userImage, 0, 0)
   ctx.restore()
 
   ctx.restore()
 
+  // Draw template on top
   ctx.drawImage(templateImage, 0, 0, canvasWidth, canvasHeight)
   ctx.restore()
 }
@@ -124,16 +133,7 @@ export const loadTemplate = async (
 ): Promise<{ templateImage: HTMLImageElement; ovalBounds: OvalBounds }> => {
   const templateImg = await loadImage(templateSrc)
 
-  const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-  const ctx = canvas.getContext('2d')
-  if (!ctx) {
-    throw new Error('Could not get canvas context')
-  }
-
-  ctx.drawImage(templateImg, 0, 0, width, height)
-
+  // Calculate oval bounds directly without creating unnecessary canvas
   const ovalBounds = getOvalConfiguration(width, height)
 
   return {
@@ -181,7 +181,10 @@ export const createDualComposites = async (
   const cardCanvas = document.createElement('canvas')
   cardCanvas.width = canvasWidth
   cardCanvas.height = canvasHeight
-  const cardCtx = cardCanvas.getContext('2d')
+  const cardCtx = cardCanvas.getContext('2d', {
+    willReadFrequently: false, // Optimize for write operations
+    alpha: true,
+  })
   if (!cardCtx) {
     throw new Error('Could not get card canvas context')
   }
@@ -189,13 +192,17 @@ export const createDualComposites = async (
   const kevinCanvas = document.createElement('canvas')
   kevinCanvas.width = canvasWidth
   kevinCanvas.height = canvasHeight
-  const kevinCtx = kevinCanvas.getContext('2d')
+  const kevinCtx = kevinCanvas.getContext('2d', {
+    willReadFrequently: false, // Optimize for write operations
+    alpha: true,
+  })
   if (!kevinCtx) {
     throw new Error('Could not get kevin canvas context')
   }
 
   const ovalBounds = getOvalConfiguration(canvasWidth, canvasHeight)
 
+  // Draw both composites
   drawComposite(
     cardCtx,
     canvasWidth,
@@ -218,9 +225,19 @@ export const createDualComposites = async (
     true
   )
 
-  return {
-    cardComposite: cardCanvas.toDataURL('image/png'),
-    kevinComposite: kevinCanvas.toDataURL('image/png'),
-  }
+  // Convert to data URLs - using toDataURL is actually faster than blob->dataURL conversion
+  // but we yield to the browser between operations for better responsiveness
+  return new Promise((resolve) => {
+    requestAnimationFrame(() => {
+      const cardComposite = cardCanvas.toDataURL('image/png', 0.95)
+      requestAnimationFrame(() => {
+        const kevinComposite = kevinCanvas.toDataURL('image/png', 0.95)
+        resolve({
+          cardComposite,
+          kevinComposite,
+        })
+      })
+    })
+  })
 }
 

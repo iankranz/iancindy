@@ -291,7 +291,7 @@ export default function FaceInHoleFlow({
           </div>
         </>
       )}
-      {step === 'capture' && cameraStarted && (
+      {step === 'capture' && cameraStarted && !isProcessing && (
         <>
           <CameraCapture
             onImageCapture={handleImageCapture}
@@ -318,7 +318,7 @@ export default function FaceInHoleFlow({
           </div>
         </>
       )}
-      {step === 'crop' && capturedImage && (
+      {step === 'crop' && capturedImage && !isProcessing && (
         <>
           <CropEditorHandles
             userImage={capturedImage}
@@ -348,9 +348,16 @@ export default function FaceInHoleFlow({
           </div>
         </>
       )}
+      {isProcessing && (
+        <div className={styles.loading}>
+          <div className={styles.spinner}></div>
+          <p>Creating your masterpiece...</p>
+        </div>
+      )}
       {step === 'result' &&
         cardCompositeUrl &&
-        kevinCompositeUrl && (
+        kevinCompositeUrl &&
+        !isProcessing && (
           <>
             <ResultScreen
               cardCompositeUrl={cardCompositeUrl}

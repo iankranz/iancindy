@@ -724,10 +724,15 @@
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-top-color: var(--card-text);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+:global(html.dark) .spinner {
+  border-color: rgba(255, 255, 255, 0.2);
+  border-top-color: var(--card-text);
 }
 
 @keyframes spin {
