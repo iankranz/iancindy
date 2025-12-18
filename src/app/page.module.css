@@ -1,66 +1,271 @@
 .page {
-  --background: #a6d9f9;
-  --foreground: #fcf8fa;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
+  --background-light: #a6d9f9;
+  --background-dark: #29357f;
+  --text-primary-light: #1a161a;
+  --text-primary-dark: #ffffff;
+  --heading-red: #bf2626;
+  --card-bg-light: #fcf8fa;
+  --card-bg-dark: #1a161a;
+  --card-text-light: #1a161a;
+  --card-text-dark: #ffffff;
 
   display: flex;
   min-height: 100vh;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  padding: 0;
+  font-family: var(--font-century);
+  /* Background removed - uses globals.css body background */
+  color: var(--text-primary-light);
 }
 
-.main {
+/* Support class-based dark mode - higher specificity */
+:global(html.dark) .page {
+  color: var(--text-primary-dark);
+}
+
+/* Media query fallback when no class is set */
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.dark)) .page {
+    color: var(--text-primary-dark);
+  }
+}
+
+.container {
   display: flex;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 800px;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 120px 60px;
+  gap: 16px;
+  padding: 0 0 32px 0;
+  width: 100%;
+  max-width: 393px;
+  background-color: var(--background-light);
+  transition: background-color 0.2s;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+/* Support class-based dark mode - higher specificity, must come after media query */
+:global(html.dark) .container {
+  background-color: var(--background-dark);
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-}
-
+/* Media query fallback when no class is set */
 @media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
+  :global(html:not(.dark)) .container {
+    background-color: var(--background-light);
+  }
+}
+
+/* Window Frame Section - container for all layers */
+.windowFrame {
+  position: relative;
+  width: 393px;
+  height: 546px;
+  flex-shrink: 0;
+}
+
+/* Base layer image styles */
+.layerImage {
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
+
+/* Background layer image - use cover to fill */
+.backgroundLayer .layerImage {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* Layer stacking - all layers are absolutely positioned to fill the container */
+.windowFrameLayer,
+.kevinLayer,
+.logoLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 1. Background layer - back */
+.backgroundLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* 2. Window frame layer */
+.windowFrameLayer {
+  z-index: 1;
+}
+
+.windowFrameImage {
+  transition: opacity 0.2s;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 3. Kevin layer */
+.kevinLayer {
+  z-index: 2;
+}
+
+/* Logo layer - positioned directly above tagline */
+.logoLayer {
+  position: absolute;
+
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 280px;
+  z-index: 5;
+}
+
+.logoImage {
+  position: absolute;
+  bottom: 48px;
+  width: 100%;
+  height: auto;
+
+  object-fit: contain;
+}
+
+/* Heading */
+.heading {
+  position: absolute;
+  font-family: var(--font-lithos-black), sans-serif;
+  inset: 4.95% 8.14% 91.39% 8.14%;
+  font-size: 16px;
+  line-height: normal;
+  font-style: normal;
+  text-align: center;
+  letter-spacing: -0.32px;
+  color: var(--heading-red);
+  text-shadow: -1px 1px 0px white;
+  white-space: normal;
+  z-index: 10;
+  margin: 0;
+}
+
+/* Support class-based dark mode - higher specificity */
+:global(html.dark) .heading {
+  color: white;
+  text-shadow: -1px 1px 0px var(--heading-red);
+}
+
+/* Media query fallback when no class is set */
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.dark)) .heading {
+    color: var(--heading-red);
+    text-shadow: -1px 1px 0px white;
+  }
+}
+
+/* Tagline */
+.tagline {
+  position: absolute;
+  font-family: var(--font-lithos-black), sans-serif;
+  inset: 90.66% 15.27% 6.59% 15.27%;
+  font-size: 12px;
+  line-height: normal;
+  font-style: normal;
+  text-align: center;
+  white-space: nowrap;
+  color: white;
+  letter-spacing: -0.24px;
+  z-index: 10;
+  margin: 0;
+}
+
+/* Content Cards */
+.contentCard {
+  background-color: var(--card-bg-light);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  width: 361px;
+  color: var(--card-text-light);
+}
+
+/* Support class-based dark mode - higher specificity */
+:global(html.dark) .contentCard {
+  background-color: var(--card-bg-dark);
+  color: var(--card-text-dark);
+  gap: 16px;
+}
+
+/* Media query fallback when no class is set */
+@media (prefers-color-scheme: dark) {
+  :global(html:not(.dark)) .contentCard {
+    background-color: var(--card-bg-light);
+    color: var(--card-text-light);
+    gap: 16px;
+  }
+}
+
+.cardHeading {
+  font-family: var(--font-lithos-black), sans-serif;
+  font-size: 24px;
+  line-height: normal;
+  font-style: normal;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.cardBody {
+  font-family: var(--font-century), sans-serif;
+  font-size: 16px;
+  line-height: normal;
+  font-style: normal;
+  min-width: 100%;
+  margin: 0;
+}
+
+.cardImages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.cardImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.5 / 1; /* Adjust based on your poster image aspect ratio */
+}
+
+.cardImage {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .container {
+    max-width: 100%;
+    padding: 0 16px 32px;
   }
 
-  .page {
-    --background: #29357f;
-    --foreground: #1a161a;
+  .windowFrame {
+    width: 100%;
+    max-width: 393px;
+    height: auto;
+    aspect-ratio: 393 / 546;
+  }
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .contentCard {
+    width: 100%;
+    max-width: 361px;
   }
 }

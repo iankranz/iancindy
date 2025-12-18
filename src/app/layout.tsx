@@ -1,15 +1,30 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// Loading custom fonts from public/fonts
+const centuryFont = localFont({
+  src: [
+    {
+      path: "../fonts/Century.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-century",
+  display: "swap",
 })
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const lithosBlackFont = localFont({
+  src: [
+    {
+      path: "../fonts/LithosBlackRegular.otf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-lithos-black",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
@@ -23,8 +38,23 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const theme = localStorage.getItem('theme');
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (theme === 'dark' || (!theme && prefersDark)) {
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={`${centuryFont.variable} ${lithosBlackFont.variable}`}>
         {children}
       </body>
     </html>

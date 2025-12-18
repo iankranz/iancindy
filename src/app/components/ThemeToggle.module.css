@@ -1,0 +1,42 @@
+.toggleButton {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-century), sans-serif;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.toggleButton:hover {
+  background-color: rgba(255, 255, 255, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  .toggleButton {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    border-color: #666;
+  }
+
+  .toggleButton:hover {
+    background-color: rgba(0, 0, 0, 1);
+  }
+}
+
+/* When dark class is applied to html */
+html.dark .toggleButton {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-color: #666;
+}
+
+html.dark .toggleButton:hover {
+  background-color: rgba(0, 0, 0, 1);
+}
+
