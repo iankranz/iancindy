@@ -11,21 +11,50 @@
 
   display: flex;
   min-height: 100vh;
-  align-items: center;
-  justify-content: center;
   font-family: var(--font-geist-sans);
   background-color: var(--background);
 }
 
 .main {
   display: flex;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 800px;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 120px 60px;
+  min-height: 100vh;
+  width: 100%;
+  flex-direction: column;
+  margin-bottom: 5rem;
+}
+
+.mainImage {
+  padding: 1rem;
+  margin-top: -2rem;
+  width: 100%;
+}
+
+.content {
+  max-width: 50rem;
+}
+
+.surface {
+  background: var(--foreground);
+  padding: 1rem 2rem;
+  margin: 1rem;
+  border-radius: 2px;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.surface-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.xmas-link {
+  color: var(--text-primary);
+  text-decoration: underline;
 }
 
 /* Enable hover only on non-touch devices */
@@ -42,12 +71,9 @@
 }
 
 @media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   .logo {
     filter: invert();
   }
@@ -63,4 +89,4 @@
     --button-secondary-hover: #1a1a1a;
     --button-secondary-border: #1a1a1a;
   }
-}
+} */
