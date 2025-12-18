@@ -46,7 +46,7 @@
 
 @media (prefers-color-scheme: dark) {
   :global(html:not(.dark)) .container {
-    background-color: var(--background-dark);
+    background-color: var(--background-light);
   }
 }
 
@@ -149,8 +149,8 @@
 
 @media (prefers-color-scheme: dark) {
   :global(html:not(.dark)) .heading {
-    color: white;
-    text-shadow: -1px 1px 0px var(--heading-red);
+    color: var(--heading-red);
+    text-shadow: -1px 1px 0px white;
   }
 }
 
@@ -191,8 +191,8 @@
 
 @media (prefers-color-scheme: dark) {
   :global(html:not(.dark)) .contentCard {
-    background-color: var(--card-bg-dark);
-    color: var(--card-text-dark);
+    background-color: var(--card-bg-light);
+    color: var(--card-text-light);
     gap: 16px;
   }
 }
