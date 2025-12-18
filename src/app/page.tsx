@@ -1,12 +1,25 @@
+'use client'
+
+import { useState } from "react"
 import Image from "next/image"
 import styles from "./page.module.css"
-import ThemeToggle from "./components/ThemeToggle"
 import WindowFrame from "./components/WindowFrame"
+import FaceInHoleModal from "./components/FaceInHoleModal"
+import FloatingButtons from "./components/FloatingButtons"
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [kevinCompositeUrl, setKevinCompositeUrl] = useState<string | null>(null)
+
+  const handleReplaceKevin = (url: string) => {
+    setKevinCompositeUrl(url)
+  }
+
   return (
     <div className={styles.page}>
-      <ThemeToggle />
+      <FloatingButtons 
+        onCameraClick={() => setIsModalOpen(true)}
+      />
       <div className={styles.container}>
         <div className={styles.windowFrame}>
           <div className={styles.backgroundLayer}>
@@ -22,12 +35,25 @@ export default function Home() {
           <WindowFrame />
 
           <div className={styles.kevinLayer}>
-            <Image 
-              src="/images/kevin.svg" 
-              alt="Kevin" 
-              fill 
-              className={styles.layerImage}
-            />
+            {kevinCompositeUrl ? (
+              <img
+                src={kevinCompositeUrl}
+                alt="Your face"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  objectPosition: 'center',
+                }}
+              />
+            ) : (
+              <Image 
+                src="/images/kevin.svg" 
+                alt="Kevin" 
+                fill 
+                className={styles.layerImage}
+              />
+            )}
           </div>
 
           <h1 className={styles.heading}>Happy holidays From Ian & Cindy</h1>
@@ -82,15 +108,28 @@ export default function Home() {
               cards interactive. This year, Cindy put something fun together.
               It&apos;s a site where you can put your face into the card!
             </p>
-            <a
+            <button
               className={styles.xmasLink}
-              href="https://faceinhole.vercel.app/"
+              onClick={() => setIsModalOpen(true)}
+              style={{
+                background: 'none',
+                border: 'none',
+                padding: 0,
+                font: 'inherit',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+              }}
             >
               Click here to try it out!
-            </a>
+            </button>
           </div>
         </div>
       </div>
+      <FaceInHoleModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onReplaceKevin={handleReplaceKevin}
+      />
     </div>
   )
 }

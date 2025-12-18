@@ -121,9 +121,8 @@
 }
 
 .heading {
-  position: absolute;
+  position: relative;
   font-family: var(--font-lithos-black), sans-serif;
-  inset: 4.95% 8.14% 91.39% 8.14%;
   font-size: 16px;
   line-height: normal;
   font-style: normal;
@@ -133,7 +132,7 @@
   text-shadow: -1px 1px 0px var(--heading-red-background);
   white-space: normal;
   z-index: 10;
-  margin: 0;
+  margin: 4.5% 16px;
 }
 
 @media (min-width: 600px) {
@@ -242,7 +241,9 @@
   }
 
   .windowFrame {
-    width: 100%;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
   }
 
   .contentCard {
