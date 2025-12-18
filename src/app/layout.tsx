@@ -55,11 +55,9 @@ export default function RootLayout({
                   document.documentElement.classList.remove('dark');
                   document.documentElement.setAttribute('data-theme', 'light');
                 } else {
-                  // No manual preference - let system preference handle it via media query
-                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (prefersDark) {
-                    document.documentElement.classList.add('dark');
-                  }
+                  // No manual preference - respect system preference
+                  // Don't set data-theme or class, let CSS media queries handle it
+                  // This allows the system preference to work via @media (prefers-color-scheme: dark)
                 }
               })();
             `,

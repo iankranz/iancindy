@@ -18,12 +18,21 @@ export default function FloatingButtons({
 
   useEffect(() => {
     setMounted(true)
-    const isDarkMode = document.documentElement.classList.contains("dark")
-    setIsDark(isDarkMode)
+    
+    // Check theme: first check data-theme attribute, then class, then system preference
+    const getCurrentTheme = () => {
+      const dataTheme = document.documentElement.getAttribute("data-theme")
+      if (dataTheme === "dark") return true
+      if (dataTheme === "light") return false
+      if (document.documentElement.classList.contains("dark")) return true
+      // Fall back to system preference
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+    }
+    
+    setIsDark(getCurrentTheme())
 
     const observer = new MutationObserver(() => {
-      const isDarkMode = document.documentElement.classList.contains("dark")
-      setIsDark(isDarkMode)
+      setIsDark(getCurrentTheme())
     })
 
     observer.observe(document.documentElement, {
@@ -31,7 +40,20 @@ export default function FloatingButtons({
       attributeFilter: ["class", "data-theme"],
     })
 
-    return () => observer.disconnect()
+    // Also listen for system theme changes
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
+    const handleSystemThemeChange = () => {
+      // Only update if no manual preference is set
+      if (!document.documentElement.getAttribute("data-theme")) {
+        setIsDark(mediaQuery.matches)
+      }
+    }
+    mediaQuery.addEventListener("change", handleSystemThemeChange)
+
+    return () => {
+      observer.disconnect()
+      mediaQuery.removeEventListener("change", handleSystemThemeChange)
+    }
   }, [])
 
   const toggleTheme = () => {
