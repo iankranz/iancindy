@@ -10,7 +10,7 @@ html.dark {
   --foreground: #fcf8fa;
 }
 
-/* Only use media query if class is not set */
+/* Only use media query if class and data-theme are not set */
 @media (prefers-color-scheme: dark) {
   html:not(.dark):not([data-theme]) :root {
     --background: #191d36;

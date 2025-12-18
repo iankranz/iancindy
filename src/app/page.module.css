@@ -1,13 +1,11 @@
 .page {
-  --background-light: #a6d9f9;
-  --background-dark: #29357f;
-  --text-primary-light: #1a161a;
-  --text-primary-dark: #ffffff;
-  --heading-red: #bf2626;
-  --card-bg-light: #fcf8fa;
-  --card-bg-dark: #1a161a;
-  --card-text-light: #1a161a;
-  --card-text-dark: #ffffff;
+  /* Light mode defaults */
+  --background: #a6d9f9;
+  --text-primary: #1a161a;
+  --heading-red-foreground: #bf2626;
+  --heading-red-background: white;
+  --card-bg: #fcf8fa;
+  --card-text: #1a161a;
 
   display: flex;
   min-height: 100vh;
@@ -15,16 +13,28 @@
   justify-content: center;
   padding: 0;
   font-family: var(--font-century);
-  color: var(--text-primary-light);
+  color: var(--text-primary);
 }
 
+/* Dark mode overrides - class-based toggle */
 :global(html.dark) .page {
-  color: var(--text-primary-dark);
+  --background: #29357f;
+  --text-primary: #ffffff;
+  --heading-red-foreground: #ffffff;
+  --heading-red-background: #bf2626;
+  --card-bg: #1a161a;
+  --card-text: #ffffff;
 }
 
+/* Dark mode overrides - system preference (only if class and data-theme not set) */
 @media (prefers-color-scheme: dark) {
-  :global(html:not(.dark)) .page {
-    color: var(--text-primary-dark);
+  :global(html:not(.dark):not([data-theme])) .page {
+    --background: #29357f;
+    --text-primary: #ffffff;
+    --heading-red-foreground: #ffffff;
+    --heading-red-background: #bf2626;
+    --card-bg: #1a161a;
+    --card-text: #ffffff;
   }
 }
 
@@ -36,18 +46,8 @@
   padding: 0 0 32px 0;
   width: 100%;
   max-width: 600px;
-  background-color: var(--background-light);
+  background-color: var(--background);
   transition: background-color 0.2s;
-}
-
-:global(html.dark) .container {
-  background-color: var(--background-dark);
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(html:not(.dark)) .container {
-    background-color: var(--background-light);
-  }
 }
 
 .windowFrame {
@@ -129,8 +129,8 @@
   font-style: normal;
   text-align: center;
   letter-spacing: -0.32px;
-  color: var(--heading-red);
-  text-shadow: -1px 1px 0px white;
+  color: var(--heading-red-foreground);
+  text-shadow: -1px 1px 0px var(--heading-red-background);
   white-space: normal;
   z-index: 10;
   margin: 0;
@@ -139,18 +139,6 @@
 @media (min-width: 600px) {
   .heading {
     font-size: 24px;
-  }
-}
-
-:global(html.dark) .heading {
-  color: white;
-  text-shadow: -1px 1px 0px var(--heading-red);
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(html:not(.dark)) .heading {
-    color: var(--heading-red);
-    text-shadow: -1px 1px 0px white;
   }
 }
 
@@ -170,7 +158,7 @@
 }
 
 .contentCard {
-  background-color: var(--card-bg-light);
+  background-color: var(--card-bg);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -180,19 +168,15 @@
   flex-shrink: 0;
   width: 100%;
   max-width: 568px;
-  color: var(--card-text-light);
+  color: var(--card-text);
 }
 
 :global(html.dark) .contentCard {
-  background-color: var(--card-bg-dark);
-  color: var(--card-text-dark);
   gap: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
   :global(html:not(.dark)) .contentCard {
-    background-color: var(--card-bg-light);
-    color: var(--card-text-light);
     gap: 16px;
   }
 }
