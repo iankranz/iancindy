@@ -61,7 +61,6 @@ const ensureTensorFlowBackend = async (faceApiModule: any): Promise<boolean> => 
     
     return true
   } catch (error) {
-    console.warn('TensorFlow.js backend check failed, but continuing:', error)
     return true
   }
 }
@@ -100,7 +99,6 @@ const loadFaceApi = async () => {
     
     throw new Error('face-api.js module structure invalid')
   } catch (error) {
-    console.error('Failed to load face-api.js:', error)
     faceapi = null
     return null
   } finally {
@@ -133,11 +131,9 @@ function useFaceDetection() {
 
     setIsLoading(true)
     try {
-      // Load face-api.js first with error handling
       const faceApiModule = await loadFaceApi()
       if (!faceApiModule) {
-        console.warn('face-api.js failed to load, face detection will be disabled')
-        setIsReady(true) // Set ready to allow app to continue without face detection
+        setIsReady(true)
         return
       }
 
@@ -145,10 +141,8 @@ function useFaceDetection() {
         throw new Error('face-api.js nets not available')
       }
 
-      // Ensure TensorFlow.js backend is ready before loading models
       await ensureTensorFlowBackend(faceApiModule)
 
-      // Load face detection models from CDN
       const MODEL_URL =
         'https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model/'
 
@@ -159,13 +153,7 @@ function useFaceDetection() {
 
       setIsReady(true)
     } catch (error: any) {
-      // Handle specific backend errors
-      if (error?.message?.includes('backend') || error?.message?.includes('undefined')) {
-        console.warn('TensorFlow.js backend initialization issue, face detection disabled:', error.message)
-      } else {
-        console.error('Failed to load face detection models:', error)
-      }
-      setIsReady(true) // Set ready even on error to allow fallback
+      setIsReady(true)
     } finally {
       setIsLoading(false)
     }
@@ -177,42 +165,33 @@ function useFaceDetection() {
     if (!isReady) return null
 
     try {
-      // Ensure face-api.js is loaded
       const faceApiModule = await loadFaceApi()
       if (!faceApiModule || !faceApiModule.nets || !faceApiModule.nets.tinyFaceDetector) {
-        console.warn('Face detection models not loaded')
         return null
       }
 
-      // Ensure TensorFlow.js backend is ready before detecting
       await ensureTensorFlowBackend(faceApiModule)
 
-      // Create image element from data URL
       const img = await loadImage(imageDataUrl)
 
-      // Detect face with landmarks
       const detection = await faceApiModule
         .detectSingleFace(img, new faceApiModule.TinyFaceDetectorOptions())
         .withFaceLandmarks()
 
       if (!detection) return null
 
-      // Extract face bounding box
       const { x, y, width, height } = detection.detection.box
 
-      // Get face landmarks for better positioning
       const landmarks = detection.landmarks
       const nose = landmarks.getNose()
       const leftEye = landmarks.getLeftEye()
       const rightEye = landmarks.getRightEye()
 
-      // Calculate face center and angle
       const faceCenter = {
         x: x + width / 2,
         y: y + height / 2,
       }
 
-      // Calculate eye angle for rotation
       const eyeLeft = {
         x: leftEye[0].x,
         y: leftEye[0].y,
@@ -237,7 +216,6 @@ function useFaceDetection() {
         },
       }
     } catch (error) {
-      console.error('Face detection error:', error)
       return null
     }
   }

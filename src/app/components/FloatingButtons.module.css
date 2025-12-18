@@ -57,6 +57,11 @@
 .icon {
   color: rgba(25, 29, 54, 1);
   flex-shrink: 0;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+}
+
+.icon:hover {
+  transform: scale(1.1);
 }
 
 :global(html.dark) .icon {
@@ -106,6 +111,42 @@
   :global(html:not(.dark):not([data-theme])) .themeIcon {
     color: rgba(166, 231, 249, 1);
   }
+}
+
+/* Camera icon animation */
+.cameraIcon {
+  animation: cameraPulse 2s ease-in-out infinite;
+}
+
+@keyframes cameraPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.cameraIcon:hover {
+  animation: cameraPulse 0.6s ease-in-out infinite;
+}
+
+/* Snowflake icon animation */
+.snowflakeIcon {
+  animation: snowflakeSpin 5s linear infinite;
+}
+
+@keyframes snowflakeSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.snowflakeIcon:hover {
+  animation: snowflakeSpin 1.2s linear infinite;
 }
 
 /* Separate snowflake button */

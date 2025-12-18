@@ -74,7 +74,7 @@ export default function FloatingButtons({
           onClick={onCameraClick}
           aria-label="Open camera"
         >
-          <Camera size={24} className={styles.icon} />
+          <Camera size={24} className={`${styles.icon} ${styles.cameraIcon}`} />
         </button>
       </div>
 
@@ -84,7 +84,7 @@ export default function FloatingButtons({
         onClick={onSnowflakeClick}
         aria-label="Snowflake"
       >
-        <Snowflake size={24} className={styles.icon} />
+        <Snowflake size={24} className={`${styles.icon} ${styles.snowflakeIcon}`} />
       </button>
 
       {/* Mobile: Horizontal button bar at bottom */}
@@ -107,7 +107,7 @@ export default function FloatingButtons({
           onClick={onSnowflakeClick}
           aria-label="Make it snow"
         >
-          <Snowflake size={24} className={styles.icon} />
+          <Snowflake size={24} className={`${styles.icon} ${styles.snowflakeIcon}`} />
           <span className={styles.snowflakeText}>Make it snow</span>
         </button>
         <button
@@ -115,7 +115,7 @@ export default function FloatingButtons({
           onClick={onCameraClick}
           aria-label="Open camera"
         >
-          <Camera size={24} className={styles.icon} />
+          <Camera size={24} className={`${styles.icon} ${styles.cameraIcon}`} />
         </button>
       </div>
     </>

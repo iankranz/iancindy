@@ -75,20 +75,17 @@ export default function FaceInHoleFlow({
 
       const templateWidth = TEMPLATE_WIDTH
       const templateHeight = TEMPLATE_HEIGHT
-      const templateAspectRatio = templateHeight / templateWidth // 1389/1000
+      const templateAspectRatio = templateHeight / templateWidth
       
-      // Calculate oval dimensions in template (absolute pixels)
       const templateOvalWidth = config.oval.radiusX * 2 * templateWidth
       const templateOvalHeight = config.oval.radiusY * 2 * templateHeight
       const templateOvalCenterX = config.oval.centerX * templateWidth
       const templateOvalCenterY = config.oval.centerY * templateHeight
 
-      // Use actual loaded image dimensions
       const imageWidth = img.width
       const imageHeight = img.height
       const imageAspectRatio = imageHeight / imageWidth
 
-      // Check if this is a camera capture (has template aspect ratio) or a cropped image
       const aspectRatioTolerance = 0.01
       const isCameraCapture = Math.abs(imageAspectRatio - templateAspectRatio) < aspectRatioTolerance
 
@@ -97,35 +94,24 @@ export default function FaceInHoleFlow({
       let y: number
 
       if (isCameraCapture) {
-        // Camera capture: full image with template aspect ratio, oval at fixed relative position
-        // Calculate oval dimensions in captured image (absolute pixels)
-        // The oval has the same relative size in both (same percentages)
         const captureOvalWidth = config.oval.radiusX * 2 * imageWidth
         const captureOvalHeight = config.oval.radiusY * 2 * imageHeight
 
-        // Scale the captured image so its oval matches the template oval exactly
         const scaleX = templateOvalWidth / captureOvalWidth
         const scaleY = templateOvalHeight / captureOvalHeight
         
-        // Since both images have the same aspect ratio (1389/1000) and oval uses same percentages,
-        // scaleX and scaleY should be equal, but use the one that ensures full coverage
         scale = Math.max(scaleX, scaleY)
 
-        // Center the scaled image on the oval center
         const scaledWidth = imageWidth * scale
         const scaledHeight = imageHeight * scale
         x = templateOvalCenterX - scaledWidth / 2
         y = templateOvalCenterY - scaledHeight / 2
       } else {
-        // Cropped image: the image IS the oval region (cropped from editor)
-        // Scale the cropped image to match the template oval dimensions
         const scaleX = templateOvalWidth / imageWidth
         const scaleY = templateOvalHeight / imageHeight
         
-        // Use the scale that ensures the image covers the entire oval
         scale = Math.max(scaleX, scaleY)
 
-        // Center the scaled cropped image on the oval center
         const scaledWidth = imageWidth * scale
         const scaledHeight = imageHeight * scale
         x = templateOvalCenterX - scaledWidth / 2
@@ -150,7 +136,6 @@ export default function FaceInHoleFlow({
       setKevinCompositeUrl(kevinComposite)
       setStep('result')
     } catch (error) {
-      console.error('Failed to process image:', error)
       alert('Failed to process image. Please try again.')
     } finally {
       setIsProcessing(false)
@@ -207,7 +192,6 @@ export default function FaceInHoleFlow({
     const file = event.target.files?.[0]
     if (!file) return
     
-    // Handle HEIC files
     let fileToProcess = file
     if (isHeicFile(file)) {
       try {
@@ -218,7 +202,6 @@ export default function FaceInHoleFlow({
       }
     }
     
-    // Check if it's an image file
     if (fileToProcess.type.startsWith('image/') || isHeicFile(file)) {
       const reader = new FileReader()
       reader.onload = async (e) => {
@@ -401,7 +384,7 @@ export default function FaceInHoleFlow({
                       }
                       img.src = cardCompositeUrl
                     } catch (error) {
-                      console.error('Download failed:', error)
+                      // Download failed silently
                     }
                   }}
                 >
@@ -444,7 +427,7 @@ export default function FaceInHoleFlow({
                       }
                       img.src = cardCompositeUrl
                     } catch (error) {
-                      console.error('Share failed:', error)
+                      // Share failed silently
                     }
                   }}
                 >

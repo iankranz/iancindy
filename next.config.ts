@@ -15,18 +15,7 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  // Turbopack configuration to match webpack fallbacks for face-api.js
-  experimental: {
-    turbo: {
-      resolveAlias: {
-        // Map Node.js built-in modules to false for client-side builds
-        // This matches the webpack fallback configuration above
-        fs: false,
-        path: false,
-        crypto: false,
-      },
-    },
-  },
+  turbopack: {},
 };
 
 export default nextConfig;

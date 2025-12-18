@@ -4,7 +4,11 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import styles from "../page.module.css"
 
-export default function WindowFrame() {
+interface WindowFrameProps {
+  scrollY?: number
+}
+
+export default function WindowFrame({ scrollY = 0 }: WindowFrameProps) {
   const [isDark, setIsDark] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -27,7 +31,12 @@ export default function WindowFrame() {
   }, [])
 
   return (
-    <div className={styles.windowFrameLayer}>
+    <div 
+      className={styles.windowFrameLayer}
+      style={{
+        transform: `translateY(${scrollY}px)`,
+      }}
+    >
       <Image 
         src="/images/window-frame-light.svg" 
         alt="" 

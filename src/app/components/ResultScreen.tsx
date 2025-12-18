@@ -38,7 +38,6 @@ export default function ResultScreen({
       }
       img.src = cardCompositeUrl
     } catch (error) {
-      console.error('Failed to download image:', error)
       alert('Failed to download image')
     }
   }
@@ -75,7 +74,6 @@ export default function ResultScreen({
       img.src = cardCompositeUrl
     } catch (error: any) {
       if (error.name !== 'AbortError') {
-        console.error('Failed to share image:', error)
         handleDownload()
       }
     }

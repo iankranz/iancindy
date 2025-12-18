@@ -40,19 +40,14 @@ export const drawComposite = (
   ovalBounds: OvalBounds,
   transparentBackground: boolean = false
 ) => {
-  // Clear canvas
   ctx.clearRect(0, 0, canvasWidth, canvasHeight)
-
-  // Save context state
   ctx.save()
 
-  // Draw background (white) only if not transparent
   if (!transparentBackground) {
     ctx.fillStyle = '#ffffff'
     ctx.fillRect(0, 0, canvasWidth, canvasHeight)
   }
 
-  // Create oval clipping path
   ctx.save()
   ctx.beginPath()
   ctx.ellipse(
@@ -66,7 +61,6 @@ export const drawComposite = (
   )
   ctx.clip()
 
-  // Draw user image with transforms inside clipping region
   ctx.save()
   ctx.translate(transform.x, transform.y)
   ctx.scale(transform.scale, transform.scale)
@@ -74,13 +68,9 @@ export const drawComposite = (
   ctx.drawImage(userImage, 0, 0)
   ctx.restore()
 
-  // Restore to remove clip
   ctx.restore()
 
-  // Draw template overlay
   ctx.drawImage(templateImage, 0, 0, canvasWidth, canvasHeight)
-
-  // Restore context
   ctx.restore()
 }
 
@@ -181,16 +171,13 @@ export const createDualComposites = async (
   canvasWidth: number = 1000,
   canvasHeight: number = 1389
 ): Promise<{ cardComposite: string; kevinComposite: string }> => {
-  // Load user image
   const userImage = await loadImage(userImageUrl)
 
-  // Load both templates
   const [cardTemplate, kevinTemplate] = await Promise.all([
     loadTemplate(canvasWidth, canvasHeight, '/images/card-template.svg'),
     loadTemplate(canvasWidth, canvasHeight, '/images/kevin-template.svg'),
   ])
 
-  // Create canvas for card composite
   const cardCanvas = document.createElement('canvas')
   cardCanvas.width = canvasWidth
   cardCanvas.height = canvasHeight
@@ -199,7 +186,6 @@ export const createDualComposites = async (
     throw new Error('Could not get card canvas context')
   }
 
-  // Create canvas for kevin composite
   const kevinCanvas = document.createElement('canvas')
   kevinCanvas.width = canvasWidth
   kevinCanvas.height = canvasHeight
@@ -208,10 +194,8 @@ export const createDualComposites = async (
     throw new Error('Could not get kevin canvas context')
   }
 
-  // Draw composites (using same oval bounds for both)
   const ovalBounds = getOvalConfiguration(canvasWidth, canvasHeight)
 
-  // Card composite with white background (for download/share)
   drawComposite(
     cardCtx,
     canvasWidth,
@@ -223,7 +207,6 @@ export const createDualComposites = async (
     false
   )
 
-  // Kevin composite with transparent background (for layer replacement)
   drawComposite(
     kevinCtx,
     canvasWidth,

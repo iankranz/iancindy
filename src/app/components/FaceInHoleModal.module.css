@@ -19,7 +19,7 @@
 .modalContent {
   background-color: var(--card-bg);
   color: var(--card-text);
-  border-radius: 0;
+  border-radius: 8px;
   width: 100%;
   max-width: 480px;
   max-height: 90vh;

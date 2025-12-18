@@ -42,7 +42,6 @@ export default function CameraCapture({
       }, 50)
       return () => clearTimeout(timer)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skipInitialScreen])
 
   useEffect(() => {
@@ -173,8 +172,8 @@ export default function CameraCapture({
           const playVideo = async () => {
             try {
               await video.play()
-            } catch (error) {
-              console.error('Video play error:', error)
+            } catch {
+              // Video play failed silently
             }
           }
           if (video.readyState >= 2) {
@@ -236,8 +235,8 @@ export default function CameraCapture({
           const playVideo = async () => {
             try {
               await video.play()
-            } catch (error) {
-              console.error('Video play error:', error)
+            } catch {
+              // Video play failed silently
             }
           }
           if (video.readyState >= 2) {
@@ -324,7 +323,6 @@ export default function CameraCapture({
     const file = event.target.files?.[0]
     if (!file) return
     
-    // Handle HEIC files
     let fileToProcess = file
     if (isHeicFile(file)) {
       try {
@@ -335,7 +333,6 @@ export default function CameraCapture({
       }
     }
     
-    // Check if it's an image file
     if (fileToProcess.type.startsWith('image/') || isHeicFile(file)) {
       const reader = new FileReader()
       reader.onload = async (e) => {

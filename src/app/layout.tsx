@@ -41,6 +41,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script
+          src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

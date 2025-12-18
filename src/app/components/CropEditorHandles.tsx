@@ -40,12 +40,9 @@ export default function CropEditorHandles({
   const [tempBounds, setTempBounds] = useState<OvalBounds | null>(null)
 
   useEffect(() => {
-    // Initialize crop editor immediately, don't wait for face detection
     initializeCrop()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userImage])
   
-  // Update oval position when face detection becomes ready (if it wasn't ready initially)
   useEffect(() => {
     if (isReady && imageObj && ovalBounds && !isDetectingFace) {
       // Check if current oval is centered (default position), if so, try to update with face detection
@@ -56,7 +53,6 @@ export default function CropEditorHandles({
       const isCentered = Math.abs(currentCenterX - canvasCenterX) < 10 && Math.abs(currentCenterY - canvasCenterY) < 10
       
       if (isCentered) {
-        // Re-run face detection to update oval position if face detection just became ready
         const updateWithFaceDetection = async () => {
           setIsDetectingFace(true)
           const faceData = await detectFace(userImage)
@@ -138,39 +134,37 @@ export default function CropEditorHandles({
   }, [isReady])
 
   useEffect(() => {
-    if (imageObj && canvasRef.current) {
-      drawCropPreview()
+    if (imageObj && canvasRef.current && canvasSize.width && canvasSize.height && ovalBounds) {
+      // Use requestAnimationFrame to ensure canvas is ready
+      requestAnimationFrame(() => {
+        drawCropPreview()
+      })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageObj, canvasSize, ovalBounds, tempBounds])
 
   const initializeCrop = async () => {
     try {
       const img = new Image()
       img.onload = async () => {
-        setImageObj(img)
-
-        // Use full width of screen (accounting for padding)
-        // On mobile, the canvas container extends to full width with negative margins
+        // Ensure image is fully decoded
+        if (img.decode) {
+          try {
+            await img.decode()
+          } catch {
+            // Image decode failed, but continue anyway
+          }
+        }
+        
         const isMobile = window.innerWidth <= 768
-        const padding = isMobile ? 0 : 32 // 16px padding on each side for desktop
+        const padding = isMobile ? 0 : 32
         const maxWidth = window.innerWidth - padding
         const imgAspectRatio = img.height / img.width
-        let width: number, height: number
 
-        // Always use full width, calculate height based on aspect ratio
-        width = maxWidth
-        height = width * imgAspectRatio
+        const width = maxWidth
+        const height = width * imgAspectRatio
 
         setCanvasSize({ width, height })
-
-        // Try face detection if ready, otherwise use default position
-        let faceData: FaceData | null = null
-        if (isReady) {
-          setIsDetectingFace(true)
-          faceData = await detectFace(userImage)
-          setIsDetectingFace(false)
-        }
+        setImageObj(img)
 
         const config = TEMPLATE_CONFIG
         let ovalRadiusX: number, ovalRadiusY: number
@@ -187,6 +181,100 @@ export default function CropEditorHandles({
         const scaledHeight = img.height * imgScale
         const offsetX = (width - scaledWidth) / 2
         const offsetY = (height - scaledHeight) / 2
+
+        // Set default centered oval bounds immediately so image can render
+        if (config.oval) {
+          const targetSize = Math.min(width, height) * 0.5
+
+          if (ovalAspectRatio >= 1) {
+            ovalRadiusY = targetSize / 2
+            ovalRadiusX = ovalRadiusY / ovalAspectRatio
+          } else {
+            ovalRadiusX = targetSize / 2
+            ovalRadiusY = ovalRadiusX * ovalAspectRatio
+          }
+        } else {
+          ovalRadiusX = width * 0.2
+          ovalRadiusY = height * 0.2
+        }
+
+        const defaultOvalBounds: OvalBounds = {
+          x: width / 2 - ovalRadiusX,
+          y: height / 2 - ovalRadiusY,
+          width: ovalRadiusX * 2,
+          height: ovalRadiusY * 2,
+          rotation: 0,
+        }
+
+        setOvalBounds(defaultOvalBounds)
+        setInitialOvalBounds(defaultOvalBounds)
+
+        // Force initial draw with default oval bounds
+        // Use img directly since state might not be updated yet
+        await new Promise(resolve => setTimeout(resolve, 0))
+        const canvas = canvasRef.current
+        if (canvas && img.complete && img.naturalWidth > 0 && canvasSize.width && canvasSize.height) {
+          requestAnimationFrame(() => {
+            const ctx = canvas.getContext('2d')
+            if (!ctx) return
+            
+            if (canvas.width !== canvasSize.width || canvas.height !== canvasSize.height) {
+              canvas.width = canvasSize.width
+              canvas.height = canvasSize.height
+            }
+            
+            ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
+            const isDark = document.documentElement.classList.contains('dark')
+            ctx.fillStyle = isDark ? '#1a161a' : '#ffffff'
+            ctx.fillRect(0, 0, canvasSize.width, canvasSize.height)
+            
+            const imgScale = Math.min(
+              canvasSize.width / img.width,
+              canvasSize.height / img.height
+            )
+            const scaledWidth = img.width * imgScale
+            const scaledHeight = img.height * imgScale
+            const offsetX = (canvasSize.width - scaledWidth) / 2
+            const offsetY = (canvasSize.height - scaledHeight) / 2
+            
+            ctx.drawImage(img, offsetX, offsetY, scaledWidth, scaledHeight)
+            
+            // Draw oval
+            const { x, y, width, height } = defaultOvalBounds
+            const centerX = x + width / 2
+            const centerY = y + height / 2
+            const radiusX = width / 2
+            const radiusY = height / 2
+            
+            ctx.save()
+            ctx.translate(centerX, centerY)
+            ctx.strokeStyle = '#4ECDC4'
+            ctx.lineWidth = 3
+            ctx.setLineDash([10, 5])
+            ctx.beginPath()
+            ctx.ellipse(0, 0, radiusX, radiusY, 0, 0, Math.PI * 2)
+            ctx.stroke()
+            ctx.setLineDash([])
+            ctx.restore()
+          })
+        }
+
+        // Try face detection if ready, otherwise keep default position
+        let faceData: FaceData | null = null
+        if (isReady) {
+          setIsDetectingFace(true)
+          try {
+            faceData = await Promise.race([
+              detectFace(userImage),
+              new Promise<null>((resolve) => 
+                setTimeout(() => resolve(null), 3000)
+              ),
+            ])
+          } catch {
+            faceData = null
+          }
+          setIsDetectingFace(false)
+        }
 
         let initialOvalBounds: OvalBounds
 
@@ -231,40 +319,27 @@ export default function CropEditorHandles({
           const yOffset = faceHeightInCanvas * heightOffsetPercent
           const ovalCenterY = faceCenterYInCanvas - yOffset
 
-          initialOvalBounds = {
+          const faceBasedOvalBounds: OvalBounds = {
             x: faceCenterXInCanvas - ovalRadiusX,
             y: ovalCenterY - ovalRadiusY,
             width: ovalRadiusX * 2,
             height: ovalRadiusY * 2,
             rotation: 0,
           }
-        } else {
-          if (config.oval) {
-            const targetSize = Math.min(width, height) * 0.5
-
-            if (ovalAspectRatio >= 1) {
-              ovalRadiusY = targetSize / 2
-              ovalRadiusX = ovalRadiusY / ovalAspectRatio
-            } else {
-              ovalRadiusX = targetSize / 2
-              ovalRadiusY = ovalRadiusX * ovalAspectRatio
-            }
-          } else {
-            ovalRadiusX = width * 0.2
-            ovalRadiusY = height * 0.2
-          }
-
-          initialOvalBounds = {
-            x: width / 2 - ovalRadiusX,
-            y: height / 2 - ovalRadiusY,
-            width: ovalRadiusX * 2,
-            height: ovalRadiusY * 2,
-            rotation: 0,
-          }
+          
+          // Update oval bounds with face detection result
+          setOvalBounds(faceBasedOvalBounds)
+          setInitialOvalBounds(faceBasedOvalBounds)
         }
-
-        setOvalBounds(initialOvalBounds)
-        setInitialOvalBounds(initialOvalBounds)
+        // If no face detected, keep the default centered oval bounds we set earlier
+        
+        // Force a draw after face detection completes (whether face found or not)
+        await new Promise(resolve => setTimeout(resolve, 0))
+        if (canvasRef.current && imageObj && canvasSize.width && canvasSize.height) {
+          requestAnimationFrame(() => {
+            drawCropPreview()
+          })
+        }
       }
       img.onerror = () => {
         alert('Failed to load image')
@@ -276,11 +351,22 @@ export default function CropEditorHandles({
   }
 
   const drawCropPreview = () => {
-    if (!imageObj || !canvasRef.current) return
+    if (!imageObj || !canvasRef.current || !canvasSize.width || !canvasSize.height) return
+    
+    // Ensure image is fully loaded and has valid dimensions
+    if (!imageObj.complete || imageObj.naturalWidth === 0 || imageObj.naturalHeight === 0) {
+      return
+    }
 
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+
+    // Ensure canvas dimensions match canvasSize
+    if (canvas.width !== canvasSize.width || canvas.height !== canvasSize.height) {
+      canvas.width = canvasSize.width
+      canvas.height = canvasSize.height
+    }
 
     ctx.clearRect(0, 0, canvasSize.width, canvasSize.height)
 

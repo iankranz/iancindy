@@ -106,7 +106,6 @@
 .logoLayer {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
   width: 100%;
   max-width: 280px;
   z-index: 5;
@@ -160,7 +159,7 @@
   background-color: var(--card-bg);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   align-items: flex-start;
   padding: 16px;
   border-radius: 2px;
@@ -168,16 +167,6 @@
   width: 100%;
   max-width: 568px;
   color: var(--card-text);
-}
-
-:global(html.dark) .contentCard {
-  gap: 16px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :global(html:not(.dark)) .contentCard {
-    gap: 16px;
-  }
 }
 
 .cardHeading {
@@ -194,7 +183,7 @@
 .cardBody {
   font-family: var(--font-century), sans-serif;
   font-size: 16px;
-  line-height: normal;
+  line-height: 140%;
   font-style: normal;
   min-width: 100%;
   margin: 0;
@@ -214,6 +203,28 @@
 
 .xmasLink:hover {
   opacity: 0.8;
+}
+
+.btnPrimary {
+  font-family: var(--font-lithos-black), sans-serif;
+  font-size: 16px;
+  letter-spacing: -0.32px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 42px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #bf2626;
+  color: white;
+  margin-top: 8px;
+}
+
+.btnPrimary:hover {
+  opacity: 0.9;
 }
 
 .cardImages {
