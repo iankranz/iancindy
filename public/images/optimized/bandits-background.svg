@@ -1,0 +1,50 @@
+<svg width="393" height="546" viewBox="0 0 393 546" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g clip-path="url(#clip0_2371_414)">
+<rect x="32" y="56" width="330" height="241" fill="url(#pattern0_2371_414)"/>
+<rect x="33.0122" y="283.393" width="327.762" height="239.25" fill="url(#pattern1_2371_414)"/>
+<rect x="63.2729" y="72.4285" width="132.441" height="100.571" fill="url(#pattern2_2371_414)"/>
+<rect width="132.441" height="74.25" transform="matrix(1 0 0 -1 63.2729 214.25)" fill="url(#pattern3_2371_414)"/>
+<rect x="188.64" y="72.4285" width="135.192" height="100.571" fill="url(#pattern4_2371_414)"/>
+<rect width="135.192" height="77.3929" transform="matrix(1 0 0 -1 188.64 217)" fill="url(#pattern5_2371_414)"/>
+<rect width="265.011" height="402.184" transform="matrix(0.998155 -0.060715 0.060759 0.998152 244.839 73.9829)" fill="url(#pattern6_2371_414)"/>
+<rect width="309.217" height="449.066" transform="matrix(0.979545 0.201226 -0.201366 0.979516 -114.326 64.9644)" fill="url(#pattern7_2371_414)"/>
+<rect width="130.476" height="130.429" transform="matrix(-1 0 0 1 137.157 252.357)" fill="url(#pattern8_2371_414)"/>
+</g>
+<defs>
+<pattern id="pattern0_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_2371_414" transform="matrix(0.000845258 0 0 0.00115741 -0.000392817 0)"/>
+</pattern>
+<pattern id="pattern1_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_2371_414" transform="scale(0.00084485 0.00115741)"/>
+</pattern>
+<pattern id="pattern2_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_2371_414" transform="scale(0.00296736 0.00390625)"/>
+</pattern>
+<pattern id="pattern3_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_2371_414" transform="matrix(0.00296736 0 0 0.00529101 0 -0.243386)"/>
+</pattern>
+<pattern id="pattern4_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_2371_414" transform="matrix(0.00290698 0 0 0.00390625 -1.32849 0)"/>
+</pattern>
+<pattern id="pattern5_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image1_2371_414" transform="matrix(0.00290698 0 0 0.00507614 -1.32849 -0.233503)"/>
+</pattern>
+<pattern id="pattern6_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image2_2371_414" transform="scale(0.000370645 0.000244229)"/>
+</pattern>
+<pattern id="pattern7_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image3_2371_414" transform="scale(0.00056243 0.000387276)"/>
+</pattern>
+<pattern id="pattern8_2371_414" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image4_2371_414" transform="scale(0.000333333)"/>
+</pattern>
+<clipPath id="clip0_2371_414">
+<rect width="393" height="546" fill="white"/>
+</clipPath>
+<image id="image0_2371_414" width="1184" height="864" preserveAspectRatio="none" xlink:href="/images/optimized/bandits-background-image-1.webp"/>
+<image id="image1_2371_414" width="1024" height="256" preserveAspectRatio="none" xlink:href="/images/optimized/bandits-background-image-2.webp"/>
+<image id="image2_2371_414" width="2698" height="4096" preserveAspectRatio="none" xlink:href="/images/optimized/bandits-background-image-3.webp"/>
+<image id="image3_2371_414" width="1778" height="2583" preserveAspectRatio="none" xlink:href="/images/optimized/bandits-background-image-4.webp"/>
+<image id="image4_2371_414" width="3000" height="3000" preserveAspectRatio="none" xlink:href="/images/optimized/bandits-background-image-5-optimized.png"/>
+</defs>
+</svg>
