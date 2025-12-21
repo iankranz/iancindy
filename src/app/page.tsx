@@ -148,7 +148,7 @@ export default function Home() {
           <h2 className={styles.cardHeading}>Ever wonder what it&apos;s like to be Kevin McCallister?</h2>
           <div className={styles.cardBody}>
             <p>
-              You might remember that we have a habit of trying to make our
+              Hello and welcome! Hope your holiday seasons is going well. To kick things off, you might remember that we have a habit of trying to make our
               cards interactive. This year, Cindy put something fun together.
               Snap a pic and become part of the card!
             </p>
