@@ -145,13 +145,19 @@ export default function Home() {
         </div>
 
         <div className={styles.contentCard}>
-          <h2 className={styles.cardHeading}>Coming soon</h2>
+          <h2 className={styles.cardHeading}>Ever wonder what it&apos;s like to be Kevin McCallister?</h2>
           <div className={styles.cardBody}>
             <p>
-              If you&apos;re looking for reflections and our recap of the year, you&apos;re too early! We&apos;re still compiling and reflecting on the year—catch up with us in a few days :) 
+              You might remember that we have a habit of trying to make our
+              cards interactive. This year, Cindy put something fun together.
+              Snap a pic and become part of the card!
             </p>
-            <p>In the meantime, there are still a few things to explore on the site. And if you don&apos;t come back by the end of the year, we hope you have a wonderful holiday season and a happy new year!
-            </p>
+            <button
+              className={styles.btnPrimary}
+              onClick={() => setIsModalOpen(true)}
+            >
+              try it out
+            </button>
           </div>
         </div>
 
@@ -185,22 +191,15 @@ export default function Home() {
         </div>
 
         <div className={styles.contentCard}>
-          <h2 className={styles.cardHeading}>Ever wonder what it&apos;s like to be Kevin McCallister?</h2>
+          <h2 className={styles.cardHeading}>Coming soon</h2>
           <div className={styles.cardBody}>
             <p>
-              You might remember that we have a habit of trying to make our
-              cards interactive. This year, Cindy put something fun together.
-              Snap a pic and become part of the card!
+              If you&apos;re looking for reflections and our recap of the year, you&apos;re too early! We&apos;re still compiling and reflecting on the year—catch up with us in a few days :) 
             </p>
-            <button
-              className={styles.btnPrimary}
-              onClick={() => setIsModalOpen(true)}
-            >
-              try it out
-            </button>
+            <p>In the meantime, there are still a few things to explore on the site. And if you don&apos;t come back by the end of the year, we hope you have a wonderful holiday season and a happy new year!
+            </p>
           </div>
         </div>
-
 
         <p>
               (merry christmas, ya filthy animals!)
