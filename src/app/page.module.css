@@ -275,7 +275,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  min-width: calc(25% - 7.5px); /* Ensure at least 4 items per row, accounting for gaps */
+  min-width: calc(33% - 7.5px); /* Ensure at least 4 items per row, accounting for gaps */
   align-self: flex-start;
 }
 

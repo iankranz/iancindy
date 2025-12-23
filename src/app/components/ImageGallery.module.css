@@ -22,7 +22,6 @@
 /* 5 images */
 .grid5 {
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
 }
 
 .grid5 .galleryItem:first-child {
