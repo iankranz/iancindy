@@ -357,8 +357,7 @@ export default function Home() {
           <h2 className={styles.cardHeading}>More content</h2>
           <div className={styles.cardBody}>
             <p>
-              Coming soon: Cindy&apos;s addendum to the above
-              {/* <a href="#" className={styles.xmasLink}>Coming soon: Cindy&apos;s 2025 thoughts</a> */}
+              <a href="/cindy2025" className={styles.xmasLink}>Cindy&apos;s addendum</a>
             </p>
             <p>
               <a href="https://substack.com/@iankranz" className={styles.xmasLink}>Ian&apos;s newsletter</a>

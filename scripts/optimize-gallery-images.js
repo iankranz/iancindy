@@ -127,7 +127,8 @@ async function main() {
     { input: 'weddings', output: 'optimized/weddings' },
     { input: 'moving', output: 'optimized/moving' },
     { input: 'nocontext', output: 'optimized/nocontext' },
-    { input: 'nyc', output: 'optimized/nyc' }
+    { input: 'nyc', output: 'optimized/nyc' },
+    { input: 'cindy2025', output: 'optimized/cindy2025' }
   ];
 
   const allResults = {};
@@ -156,6 +157,42 @@ async function main() {
         fileName: 'fin.jpg',
         relativePath: path.relative(IMAGES_DIR, result.webp).replace(/\\/g, '/')
       }];
+    }
+  }
+
+  // Handle cindy2025 specific files (housewarming, fin-cindy)
+  const cindy2025Dir = path.join(IMAGES_DIR, 'cindy2025');
+  if (fs.existsSync(cindy2025Dir)) {
+    const cindy2025Output = path.join(IMAGES_DIR, 'optimized/cindy2025');
+    
+    // Handle housewarming.JPG
+    const housewarmingPath = path.join(cindy2025Dir, 'housewarming.JPG');
+    if (fs.existsSync(housewarmingPath)) {
+      console.log(`\n📁 Processing housewarming.JPG...`);
+      const result = await optimizeImage(housewarmingPath, cindy2025Output);
+      if (result) {
+        if (!allResults.cindy2025) allResults.cindy2025 = [];
+        allResults.cindy2025.push({
+          ...result,
+          fileName: 'housewarming.JPG',
+          relativePath: path.relative(IMAGES_DIR, result.webp).replace(/\\/g, '/')
+        });
+      }
+    }
+    
+    // Handle fin-cindy.JPG
+    const finCindyPath = path.join(cindy2025Dir, 'fin-cindy.JPG');
+    if (fs.existsSync(finCindyPath)) {
+      console.log(`\n📁 Processing fin-cindy.JPG...`);
+      const result = await optimizeImage(finCindyPath, cindy2025Output);
+      if (result) {
+        if (!allResults.cindy2025) allResults.cindy2025 = [];
+        allResults.cindy2025.push({
+          ...result,
+          fileName: 'fin-cindy.JPG',
+          relativePath: path.relative(IMAGES_DIR, result.webp).replace(/\\/g, '/')
+        });
+      }
     }
   }
 
@@ -199,6 +236,83 @@ async function main() {
     });
     console.log(']');
     console.log('');
+  }
+
+  if (allResults.cindy2025 && allResults.cindy2025.length > 0) {
+    console.log('// Cindy 2025 images organized by category:');
+    console.log('');
+    
+    // Organize by prefix
+    const workImages = allResults.cindy2025.filter(img => img.fileName.startsWith('work'));
+    const skiImages = allResults.cindy2025.filter(img => img.fileName.startsWith('ski'));
+    const hairImages = allResults.cindy2025.filter(img => img.fileName.startsWith('hair'));
+    const peopleImages = allResults.cindy2025.filter(img => img.fileName.startsWith('people'));
+    const travelImages = allResults.cindy2025.filter(img => img.fileName.startsWith('travel'));
+    const astronautImages = allResults.cindy2025.filter(img => img.fileName.startsWith('astronaut'));
+    const bonusImages = allResults.cindy2025.filter(img => img.fileName.startsWith('bonus'));
+    
+    if (workImages.length > 0) {
+      console.log('const jobGalleryImages: GalleryImage[] = [');
+      workImages.forEach((img, idx) => {
+        console.log(`  { src: "/images/${img.relativePath}", alt: "Work photo ${idx + 1}" },`);
+      });
+      console.log(']');
+      console.log('');
+    }
+    
+    if (skiImages.length > 0) {
+      console.log('const hobbiesGalleryImages: GalleryImage[] = [');
+      skiImages.forEach((img, idx) => {
+        console.log(`  { src: "/images/${img.relativePath}", alt: "Ski photo ${idx + 1}" },`);
+      });
+      console.log(']');
+      console.log('');
+    }
+    
+    if (hairImages.length > 0) {
+      console.log('const hairGalleryImages: GalleryImage[] = [');
+      hairImages.forEach((img, idx) => {
+        console.log(`  { src: "/images/${img.relativePath}", alt: "Hair photo ${idx + 1}" },`);
+      });
+      console.log(']');
+      console.log('');
+    }
+    
+    if (peopleImages.length > 0) {
+      console.log('const peopleGalleryImages: GalleryImage[] = [');
+      peopleImages.forEach((img, idx) => {
+        console.log(`  { src: "/images/${img.relativePath}", alt: "People photo ${idx + 1}" },`);
+      });
+      console.log(']');
+      console.log('');
+    }
+    
+    if (travelImages.length > 0) {
+      console.log('const travelGalleryImages: GalleryImage[] = [');
+      travelImages.forEach((img, idx) => {
+        console.log(`  { src: "/images/${img.relativePath}", alt: "Travel photo ${idx + 1}" },`);
+      });
+      console.log(']');
+      console.log('');
+    }
+    
+    if (astronautImages.length > 0) {
+      console.log('const astronautGalleryImages: GalleryImage[] = [');
+      astronautImages.forEach((img, idx) => {
+        console.log(`  { src: "/images/${img.relativePath}", alt: "Astronaut photo ${idx + 1}" },`);
+      });
+      console.log(']');
+      console.log('');
+    }
+    
+    if (bonusImages.length > 0) {
+      console.log('const bonusGalleryImages: GalleryImage[] = [');
+      bonusImages.forEach((img, idx) => {
+        console.log(`  { src: "/images/${img.relativePath}", alt: "Bonus photo ${idx + 1}" },`);
+      });
+      console.log(']');
+      console.log('');
+    }
   }
 }
 
