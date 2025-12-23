@@ -30,6 +30,25 @@ const lithosBlackFont = localFont({
 export const metadata: Metadata = {
   title: "Ian and Cindy's Website",
   description: "Personal website of Ian and Cindy for sharing projects.",
+  openGraph: {
+    title: "Ian and Cindy's Website",
+    description: "Personal website of Ian and Cindy for sharing projects.",
+    images: [
+      {
+        url: "/images/preview.png",
+        width: 776,
+        height: 1076,
+        alt: "Ian and Cindy's Holiday Card",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ian and Cindy's Website",
+    description: "Personal website of Ian and Cindy for sharing projects.",
+    images: ["/images/preview.png"],
+  },
 }
 
 export default function RootLayout({
