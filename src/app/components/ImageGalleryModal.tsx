@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { GalleryImage } from './ImageGallery'
 import styles from './ImageGalleryModal.module.css'
@@ -19,6 +19,13 @@ export default function ImageGalleryModal({
   onNavigate,
 }: ImageGalleryModalProps) {
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  const [swipeOffset, setSwipeOffset] = useState(0)
+  const imageContainerRef = useRef<HTMLDivElement>(null)
+
+  // Minimum swipe distance to trigger navigation (in pixels)
+  const minSwipeDistance = 50
 
   useEffect(() => {
     // Reset image loaded state when index changes
@@ -81,6 +88,55 @@ export default function ImageGalleryModal({
   const currentImage = images[initialIndex]
   const hasMultipleImages = images.length > 1
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (touchStart === null) return
+    
+    const currentX = e.targetTouches[0].clientX
+    const diff = currentX - touchStart
+    setSwipeOffset(diff)
+  }
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStart) {
+      setTouchStart(null)
+      setTouchEnd(null)
+      setSwipeOffset(0)
+      return
+    }
+
+    const touch = e.changedTouches[0]
+    setTouchEnd(touch.clientX)
+
+    const distance = touchStart - touch.clientX
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe && hasMultipleImages) {
+      onNavigate('next')
+    } else if (isRightSwipe && hasMultipleImages) {
+      onNavigate('prev')
+    } else {
+      // Reset if swipe wasn't far enough
+      setSwipeOffset(0)
+    }
+
+    // Reset touch state
+    setTouchStart(null)
+    setTouchEnd(null)
+  }
+
+  // Reset swipe state when image changes
+  useEffect(() => {
+    setTouchStart(null)
+    setTouchEnd(null)
+    setSwipeOffset(0)
+  }, [initialIndex])
+
   return (
     <div
       className={styles.modalOverlay}
@@ -90,7 +146,13 @@ export default function ImageGalleryModal({
         }
       }}
     >
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+      <div 
+        className={styles.modalContent} 
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         <button
           className={styles.closeButton}
           onClick={onClose}
@@ -152,7 +214,14 @@ export default function ImageGalleryModal({
           </>
         )}
 
-        <div className={styles.imageContainer}>
+        <div 
+          ref={imageContainerRef}
+          className={styles.imageContainer}
+          style={{
+            transform: swipeOffset !== 0 ? `translateX(${swipeOffset}px)` : undefined,
+            transition: swipeOffset === 0 ? 'transform 0.3s ease-out' : 'none',
+          }}
+        >
           {!imageLoaded && (
             <div className={styles.loadingSpinner}>
               <div className={styles.spinner}></div>
@@ -166,6 +235,7 @@ export default function ImageGalleryModal({
             sizes="100vw"
             onLoad={() => setImageLoaded(true)}
             priority
+            draggable={false}
           />
         </div>
 

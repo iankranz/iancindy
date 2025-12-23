@@ -51,9 +51,8 @@ export default function Home() {
     setKevinCompositeUrl(url)
   }
 
-  // Example gallery images - replace with your actual images from Figma
-  // You can add multiple galleries by creating different arrays
-  // Gallery for "About the card" section - 2 images
+  // Gallery for "About the card" section - 2 images (posters)
+  // Note: These should be optimized versions of the posters
   const moviePosterImages: GalleryImage[] = [
     // Add your 2 gallery images here from Figma
     // { src: "/images/poster-1.jpg", alt: "Home Alone poster 1" },
@@ -62,19 +61,49 @@ export default function Home() {
 
   // Galleries for "Recapping our 2025" section
   const travelGalleryImages: GalleryImage[] = [
-    // Add travel gallery images here
+    { src: "/images/optimized/travel/travel1.webp", alt: "Travel photo 1" },
+    { src: "/images/optimized/travel/travel2.webp", alt: "Travel photo 2" },
+    { src: "/images/optimized/travel/travel3.webp", alt: "Travel photo 3" },
+    { src: "/images/optimized/travel/travel4.webp", alt: "Travel photo 4" },
+    { src: "/images/optimized/travel/travel5.webp", alt: "Travel photo 5" },
+    { src: "/images/optimized/travel/travel6.webp", alt: "Travel photo 6" },
+    { src: "/images/optimized/travel/travel7.webp", alt: "Travel photo 7" },
+    { src: "/images/optimized/travel/travel8.webp", alt: "Travel photo 8" },
   ]
-
+  
   const weddingsGalleryImages: GalleryImage[] = [
-    // Add weddings & family gallery images here
+    { src: "/images/optimized/weddings/wedding1.JPG.webp", alt: "Wedding photo 1" },
+    { src: "/images/optimized/weddings/wedding2.webp", alt: "Wedding photo 2" },
+    { src: "/images/optimized/weddings/wedding3.webp", alt: "Wedding photo 3" },
+    { src: "/images/optimized/weddings/wedding4.webp", alt: "Wedding photo 4" },
+    { src: "/images/optimized/weddings/wedding5.webp", alt: "Wedding photo 5" },
+    { src: "/images/optimized/weddings/wedding6.webp", alt: "Wedding photo 6" },
   ]
-
+  
   const movingGalleryImages: GalleryImage[] = [
-    // Add moving gallery images here
+    { src: "/images/optimized/moving/moving1.webp", alt: "Moving photo 1" },
+    { src: "/images/optimized/moving/moving2.webp", alt: "Moving photo 2" },
+    { src: "/images/optimized/moving/moving3.webp", alt: "Moving photo 3" },
+    { src: "/images/optimized/moving/moving4.webp", alt: "Moving photo 4" },
+    { src: "/images/optimized/moving/moving5.webp", alt: "Moving photo 5" },
+  ]  
+
+  const nycGalleryImages: GalleryImage[] = [
+    { src: "/images/optimized/nyc/nyc1.webp", alt: "NYC photo 1" },
+    { src: "/images/optimized/nyc/nyc2.webp", alt: "NYC photo 2" },
+    { src: "/images/optimized/nyc/nyc3.webp", alt: "NYC photo 3" },
+    { src: "/images/optimized/nyc/nyc4.webp", alt: "NYC photo 4" },
+    { src: "/images/optimized/nyc/nyc5.webp", alt: "NYC photo 5" },
+    { src: "/images/optimized/nyc/nyc6.webp", alt: "NYC photo 6" },
   ]
 
   const bonusGalleryImages: GalleryImage[] = [
-    // Add moving gallery images here
+    { src: "/images/nocontext/bonus1.jpeg", alt: "Bonus photo 1" },
+    { src: "/images/nocontext/bonus2.jpeg", alt: "Bonus photo 2" },
+    { src: "/images/nocontext/bonus3.jpg", alt: "Bonus photo 3" },
+    { src: "/images/nocontext/bonus5.jpeg", alt: "Bonus photo 4" },
+    { src: "/images/nocontext/bonus7.jpeg", alt: "Bonus photo 5" },
+    { src: "/images/nocontext/bonus8.jpeg", alt: "Bonus photo 6" },
   ]
 
   const parallaxSpeed = {
@@ -240,7 +269,7 @@ export default function Home() {
             </div>
 
             <p>
-              We had a lot of firsts this year. It was Ian&apos;s first time visiting Europe and Asia. Cindy tried skiing for the first time and got to experience some sick slopes in Vermont.
+              We had a lot of firsts this year. It was Ian&apos;s first time visiting Europe and Asia. We went to London and Paris with Nikhil (and met up with many friends in the process). And our Taipei and Hong Kong trips were with our friends Annie and Zac. Cindy tried skiing for the first time and got to experience some sick slopes in Vermont.
             </p>
 
             {/* Travel Gallery - replace with your actual images */}
@@ -251,7 +280,18 @@ export default function Home() {
             )}
 
             <p>
-              We also traveled a decent amount for weddings &amp; family. We&apos;re getting to the age where our friends are getting married left and right. This year, our friends&apos; weddings brought us to Oregon, Long Island, and Pennsylvania. And Cindy traveled to her mom&apos;s hometown of Taiyuan in China for her cousin&apos;s wedding!
+              We&apos;re getting to the age where our friends are getting married left and right, so we traveled a bit for weddings. This year, our friends&apos; weddings brought us to Oregon, Long Island, and Pennsylvania. And Cindy traveled to her mom&apos;s hometown of Taiyuan in China for her cousin&apos;s!
+            </p>
+
+            {/* Weddings Gallery - replace with your actual images */}
+            {weddingsGalleryImages.length > 0 && (
+              <div className={styles.galleryWrapper}>
+                <ImageGallery images={weddingsGalleryImages} />
+              </div>
+            )}
+
+            <p>
+              And lastly, we traveled to see our beloved family. Ian was in Chicago a whopping 5 times this year. And both of us flitted around the east coast and to Phoenix as well.
             </p>
 
             <div className={styles.statsGrid}>
@@ -260,12 +300,6 @@ export default function Home() {
               <CountUpStat value="6" label="cities Cindy saw her family in" />
             </div>
 
-            {/* Weddings Gallery - replace with your actual images */}
-            {weddingsGalleryImages.length > 0 && (
-              <div className={styles.galleryWrapper}>
-                <ImageGallery images={weddingsGalleryImages} />
-              </div>
-            )}
 
             <h3 className={styles.cardSubheading}>Big moves</h3>
             <p>
@@ -297,17 +331,25 @@ export default function Home() {
               For sport, we began playing softball in a rec league. Our team hasn&apos;t won anything yet, but next season it&apos;ll be totally different, we swear.
             </p>
 
+            {/* NYC Gallery - replace with your actual images */}
+            {nycGalleryImages.length > 0 && (
+              <div className={styles.galleryWrapper}>
+                <ImageGallery images={nycGalleryImages} />
+              </div>
+            )}
+
             <h3 className={styles.cardSubheading}>Fin</h3>
             <p>
               We&apos;re enjoying the company of Ian&apos;s family and the calm of the Chicago suburbs before 2026 officially gets moving. Thank you for reading, and we hope your holidays are swell! Goodbye 2025!
             </p>
-
-            {/* Bonus Gallery - replace with your actual images */}
+            {/* <p>
+              P.S. Here are some bonus pics with no context:
+            </p>
             {bonusGalleryImages.length > 0 && (
               <div className={styles.galleryWrapper}>
                 <ImageGallery images={bonusGalleryImages} />
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -329,6 +371,16 @@ export default function Home() {
               <a href="https://592manhattan.com/holiday2023" className={styles.xmasLink}>2023&apos;s card</a>
             </p>
           </div>
+        </div>
+
+        <div className={styles.finImageWrapper}>
+          <Image 
+            src="/images/optimized/fin.webp" 
+            alt="Fin" 
+            width={100}
+            height={100}
+            className={styles.finImage}
+          />
         </div>
 
         <p>

@@ -193,10 +193,8 @@
 .mobileButtonBar {
   display: none;
   position: fixed;
-  bottom: 15.75px;
-  left: 36px;
-  right: 32px;
-  gap: 16px;
+  bottom: 16px;
+  gap: 8px;
   align-items: center;
   z-index: 1000;
 }
