@@ -4,7 +4,8 @@
 }
 
 /* Support class-based dark mode toggle - check class first */
-html.dark {
+html.dark,
+html[data-theme="dark"] {
   color-scheme: dark;
   --background: #191d36;
   --foreground: #fcf8fa;
@@ -12,7 +13,8 @@ html.dark {
 
 /* Only use media query if class and data-theme are not set */
 @media (prefers-color-scheme: dark) {
-  html:not(.dark):not([data-theme]) :root {
+  html:not(.dark):not([data-theme]) {
+    color-scheme: dark;
     --background: #191d36;
     --foreground: #fcf8fa;
   }
@@ -24,12 +26,18 @@ body {
   overflow-x: hidden;
 }
 
+html {
+  background: var(--background);
+  min-height: 100%;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-century), 'EB Garamond', Georgia, 'Times New Roman', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
 }
 
 .lithos-text {

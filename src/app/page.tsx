@@ -6,6 +6,8 @@ import styles from "./page.module.css"
 import WindowFrame from "./components/WindowFrame"
 import FaceInHoleModal from "./components/FaceInHoleModal"
 import FloatingButtons from "./components/FloatingButtons"
+import ImageGallery, { GalleryImage } from "./components/ImageGallery"
+import CountUpStat from "./components/CountUpStat"
 
 declare global {
   interface Window {
@@ -48,6 +50,32 @@ export default function Home() {
   const handleReplaceKevin = (url: string) => {
     setKevinCompositeUrl(url)
   }
+
+  // Example gallery images - replace with your actual images from Figma
+  // You can add multiple galleries by creating different arrays
+  // Gallery for "About the card" section - 2 images
+  const moviePosterImages: GalleryImage[] = [
+    // Add your 2 gallery images here from Figma
+    // { src: "/images/poster-1.jpg", alt: "Home Alone poster 1" },
+    // { src: "/images/poster-2.jpg", alt: "Home Alone poster 2" },
+  ]
+
+  // Galleries for "Recapping our 2025" section
+  const travelGalleryImages: GalleryImage[] = [
+    // Add travel gallery images here
+  ]
+
+  const weddingsGalleryImages: GalleryImage[] = [
+    // Add weddings & family gallery images here
+  ]
+
+  const movingGalleryImages: GalleryImage[] = [
+    // Add moving gallery images here
+  ]
+
+  const bonusGalleryImages: GalleryImage[] = [
+    // Add moving gallery images here
+  ]
 
   const parallaxSpeed = {
     background: -0.05,
@@ -145,18 +173,16 @@ export default function Home() {
         </div>
 
         <div className={styles.contentCard}>
-          <h2 className={styles.cardHeading}>Ever wonder what it&apos;s like to be Kevin McCallister?</h2>
+          <h2 className={styles.cardHeading}>Hello and welcome!</h2>
           <div className={styles.cardBody}>
             <p>
-              Hello and welcome! Hope your holiday seasons is going well. To kick things off, you might remember that we have a habit of trying to make our
-              cards interactive. This year, Cindy put something fun together.
-              Snap a pic and become part of the card!
+              Hope your holiday season is going well. To kick things off, you might remember that we have a habit of trying to make our cards interactive. This year, you can be part of the card. Ever wonder what it&apos;s like to be Kevin McCallister? Snap a pic and send us the result! :)
             </p>
             <button
               className={styles.btnPrimary}
               onClick={() => setIsModalOpen(true)}
             >
-              try it out
+              Be part of the card
             </button>
           </div>
         </div>
@@ -165,15 +191,10 @@ export default function Home() {
           <h2 className={styles.cardHeading}>About the card</h2>
           <div className={styles.cardBody}>
             <p>
-              This year was quite a rush, and this card is no different. A few outfit tests and a speedy photoshoot later, we&apos;ve become Home Alone. We put the movie on the TV, enlisted our friend Robert to help us snap some pics, and voila! We&apos;ve cast ourselves as the villains of the movie, the Wet Bandits.
+              This year was quite a rush, and this card is no different. A few outfit tests and a speedy photoshoot later, we&apos;ve become the Home Alone villains, the Wet Bandits. We put the movie on the TV, enlisted our friend Robert to help us snap some pics, and voila!
             </p>
             <p>
-              (We&apos;re basically taking for granted that pretty much everyone we know has seen this movie. But if you&apos;re not familiar (we don&apos;t judge),  When Kevin, the kid pictured above, is accidentally left behind while his family goes on vacation, he&apos; left to his own devices to prevent us from robbing his house.)
-            </p>
-            <p>
-              There are a couple of posters out there for Home Alone, and we
-              went with the one we liked the best for the card, but as you can
-              see there&apos;s an alternate poster here on the website.
+              (We&apos;re basically taking for granted that pretty much everyone has seen this movie. Due to repeated viewings, this movie is practically baked into Ian&apos;s memory. But if you&apos;re not as familiar, when Kevin, the kid pictured above, is accidentally left behind while his family goes on vacation, he&apos;s left to his own devices to prevent us from robbing his house.)
             </p>
 
           <div className={styles.cardImages}>
@@ -181,22 +202,131 @@ export default function Home() {
               <Image src="/images/posters.png" alt="Home Alone movie posters" fill className={styles.cardImage} />
             </div>
           </div>
+
+          {/* Image Gallery - replace moviePosterImages with your actual images */}
+          {moviePosterImages.length > 0 && (
+            <div className={styles.galleryWrapper}>
+              <ImageGallery images={moviePosterImages} />
+            </div>
+          )}
+
             <p>
-              Some of you fans might also know that Home Alone 2 takes place in
-              New York City. Due to repeated viewings, this movie is practically
-              baked into Ian&apos;s memory. We know, we know. We live in New York, we should have done Home Alone 2... but you&apos;ll just have to wait for the sequel.
+              Some of you fans might also know that Home Alone 2 takes place in New York City. We know, we know. We live in NYC, we should have done Home Alone 2... but you&apos;ll just have to wait for the sequel.
             </p>
             
           </div>
         </div>
 
         <div className={styles.contentCard}>
-          <h2 className={styles.cardHeading}>Coming soon</h2>
+          <h2 className={styles.cardHeading}>Recapping our 2025</h2>
           <div className={styles.cardBody}>
             <p>
-              If you&apos;re looking for reflections and our recap of the year, you&apos;re too early! We&apos;re still compiling and reflecting on the year—catch up with us in a few days :) 
+              The year 2025 is reaching its conclusion, and many people (you included) are wondering what the year held for Ian and Cindy. You&apos;ve come to the right place. Buckle up, and let us take you on a brief sleigh ride through our year, and let our annual highlights be your warm hearth on this cold winter night.
             </p>
-            <p>In the meantime, there are still a few things to explore on the site. And if you don&apos;t come back by the end of the year, we hope you have a wonderful holiday season and a happy new year!
+            
+            <h3 className={styles.cardSubheading}>First up: travel</h3>
+            <p>
+              Cindy and Ian covered more distance this year than any other before. We visited some awesome places, and some pretty decent airport lounges.
+            </p>
+            <p>
+              Between the two of us we went to...
+            </p>
+            
+            <div className={styles.statsGrid}>
+              <CountUpStat value="20+" label="cities/towns" />
+              <CountUpStat value="8" label="US states" />
+              <CountUpStat value="5" label="countries" />
+              <CountUpStat value="3" label="continents" />
+            </div>
+
+            <p>
+              We had a lot of firsts this year. It was Ian&apos;s first time visiting Europe and Asia. Cindy tried skiing for the first time and got to experience some sick slopes in Vermont.
+            </p>
+
+            {/* Travel Gallery - replace with your actual images */}
+            {travelGalleryImages.length > 0 && (
+              <div className={styles.galleryWrapper}>
+                <ImageGallery images={travelGalleryImages} />
+              </div>
+            )}
+
+            <p>
+              We also traveled a decent amount for weddings &amp; family. We&apos;re getting to the age where our friends are getting married left and right. This year, our friends&apos; weddings brought us to Oregon, Long Island, and Pennsylvania. And Cindy traveled to her mom&apos;s hometown of Taiyuan in China for her cousin&apos;s wedding!
+            </p>
+
+            <div className={styles.statsGrid}>
+              <CountUpStat value="4" label="weddings attended" />
+              <CountUpStat value="5" label="times Ian was in chicago" />
+              <CountUpStat value="6" label="cities Cindy saw her family in" />
+            </div>
+
+            {/* Weddings Gallery - replace with your actual images */}
+            {weddingsGalleryImages.length > 0 && (
+              <div className={styles.galleryWrapper}>
+                <ImageGallery images={weddingsGalleryImages} />
+              </div>
+            )}
+
+            <h3 className={styles.cardSubheading}>Big moves</h3>
+            <p>
+              We moved apartments this year! Our new place is about three quarters of a mile south of our last one. Technically it&apos;s a different neighborhood—we went from Greenpoint to Williamsburg.
+            </p>
+            <p>
+              The move went (mostly) smoothly; we hired movers for most of our stuff and carted the rest in a wagon door-to-door.
+            </p>
+
+            {/* Moving Gallery - replace with your actual images */}
+            {movingGalleryImages.length > 0 && (
+              <div className={styles.galleryWrapper}>
+                <ImageGallery images={movingGalleryImages} />
+              </div>
+            )}
+
+            <p>
+              Our new place is definitely an upgrade. Great natural light, a few new building amenities, and more space. Come visit and check it out!
+            </p>
+
+            <h3 className={styles.cardSubheading}>Life at home</h3>
+            <p>
+              In between traveling and moving, we still managed to take advantage of many things the city has to offer.
+            </p>
+            <p>
+              We&apos;re lucky to have so many friends nearby (and visiting). A lot of our weekends and nights were spent exploring the local cuisine, going to concerts and shows, and at many a party.
+            </p>
+            <p>
+              For sport, we began playing softball in a rec league. Our team hasn&apos;t won anything yet, but next season it&apos;ll be totally different, we swear.
+            </p>
+
+            <h3 className={styles.cardSubheading}>Fin</h3>
+            <p>
+              We&apos;re enjoying the company of Ian&apos;s family and the calm of the Chicago suburbs before 2026 officially gets moving. Thank you for reading, and we hope your holidays are swell! Goodbye 2025!
+            </p>
+
+            {/* Bonus Gallery - replace with your actual images */}
+            {bonusGalleryImages.length > 0 && (
+              <div className={styles.galleryWrapper}>
+                <ImageGallery images={bonusGalleryImages} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.contentCard}>
+          <h2 className={styles.cardHeading}>More content</h2>
+          <div className={styles.cardBody}>
+            <p>
+              Coming soon: Cindy&apos;s addendum to the above
+              {/* <a href="#" className={styles.xmasLink}>Coming soon: Cindy&apos;s 2025 thoughts</a> */}
+            </p>
+            <p>
+              <a href="https://substack.com/@iankranz" className={styles.xmasLink}>Ian&apos;s newsletter</a>
+            </p>
+            <h3 className={styles.cardSubheading}>Revisit our past cards</h3>
+            <p>
+              <a href="https://592manhattan.com/" className={styles.xmasLink}>2024&apos;s card</a>
+            </p>
+            <p>
+              <a href="https://592manhattan.com/holiday2023" className={styles.xmasLink}>2023&apos;s card</a>
             </p>
           </div>
         </div>

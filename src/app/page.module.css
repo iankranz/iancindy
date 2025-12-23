@@ -180,6 +180,17 @@
   overflow-wrap: break-word;
 }
 
+.cardSubheading {
+  font-family: var(--font-lithos-black), sans-serif;
+  font-size: 16px;
+  line-height: normal;
+  font-style: normal;
+  text-transform: uppercase;
+  margin: 0;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
 .cardBody {
   font-family: var(--font-century), sans-serif;
   font-size: 16px;
@@ -244,10 +255,66 @@
   object-position: center;
 }
 
+.galleryWrapper {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.statsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+}
+
+.statItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: calc(25% - 7.5px); /* Ensure at least 4 items per row, accounting for gaps */
+  align-self: flex-start;
+}
+
+.statNumber {
+  font-family: var(--font-lithos-black), sans-serif;
+  font-size: 36px;
+  line-height: 1;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--card-text);
+  height: 1em;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0;
+}
+
+.statNumberValue {
+  line-height: 1;
+}
+
+.statNumberPlus {
+  line-height: 1;
+  font-size: 0.7em;
+  vertical-align: baseline;
+}
+
+.statLabel {
+  font-family: var(--font-century), sans-serif;
+  font-size: 12px;
+  line-height: normal;
+  margin: 0;
+  color: var(--card-text);
+}
+
 @media (max-width: 600px) {
   .container {
     max-width: 100%;
-    padding: 0 16px 100px;
+    padding: 0 8px 100px;
   }
 
   .windowFrame {

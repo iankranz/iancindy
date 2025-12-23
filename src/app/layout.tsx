@@ -41,27 +41,31 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script
-          src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"
-        />
-        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                const theme = localStorage.getItem('theme');
-                if (theme === 'dark') {
-                  document.documentElement.classList.add('dark');
-                  document.documentElement.setAttribute('data-theme', 'dark');
-                } else if (theme === 'light') {
-                  document.documentElement.classList.remove('dark');
-                  document.documentElement.setAttribute('data-theme', 'light');
-                } else {
-                  // No manual preference - respect system preference
-                  // Don't set data-theme or class, let CSS media queries handle it
-                  // This allows the system preference to work via @media (prefers-color-scheme: dark)
+                try {
+                  const theme = localStorage.getItem('theme');
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                  } else if (theme === 'light') {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.setAttribute('data-theme', 'light');
+                  } else {
+                    // No manual preference - respect system preference
+                    // Don't set data-theme or class, let CSS media queries handle it
+                    // This allows the system preference to work via @media (prefers-color-scheme: dark)
+                  }
+                } catch (e) {
+                  // localStorage might not be available in some contexts
                 }
               })();
             `,
           }}
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"
         />
       </head>
       <body className={`${centuryFont.variable} ${lithosBlackFont.variable}`}>
